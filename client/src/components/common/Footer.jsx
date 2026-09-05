@@ -1,109 +1,75 @@
-import React from "react";
-import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React from 'react'
+import { FaLinkedin, FaTwitter, FaInstagram } from "react-icons/fa";
 
 const Footer = () => {
   return (
+    <footer className="bg-gray-950 border-t border-gray-800">
+      <div className='max-w-6xl mx-auto px-4 py-16'>
+        
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-12'>
+          
+          {/* Brand */}
+          <div>
+            <h3 className='text-2xl font-bold text-white'>PrepMind AI</h3>
+            <p className='mt-4 text-gray-400'>
+              AI-powered job prep platform for the next generation of talent.
+            </p>
+            <div className='flex gap-4 mt-6'>
+              <a href="#" className='text-gray-400 hover:text-[#0A66C2] transition'><FaLinkedin size={22}/></a>
+              <a href="#" className='text-gray-400 hover:text-[#0A66C2] transition'><FaTwitter size={22}/></a>
+              <a href="#" className='text-gray-400 hover:text-[#0A66C2] transition'><FaInstagram size={22}/></a>
+            </div>
+          </div>
 
-    <>
-    
-       <section className="py-14 px-4 bg-gradient-to-b from-black via-gray-900 to-black">
-
-      <div className="max-w-4xl mx-auto text-center">
-
-        {/* Heading */}
-        <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent animate-pulse">
-          Take the next step in your career today
-        </h1>
-
-        {/* Subtext */}
-        <p className="text-gray-300 text-sm md:text-base mb-8">
-          Unlock your potential with AI-powered guidance, real interview practice,
-          and a roadmap designed just for you.
-        </p>
-
-        {/* CTA Button */}
-        <button className="px-5 py-3 rounded-4xl bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold 
-        shadow-lg hover:scale-105 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] transition-all duration-200">
-          Start Your Journey 🚀
-        </button>
-
-      </div>
-
-    </section>
-
-      <footer className="bg-gradient-to-b from-black via-gray-900 to-black text-white pt-16 pb-8 px-4">
-
-      <div className="max-w-6xl mx-auto grid md:grid-cols-4 gap-8">
-
-        {/* Logo + About */}
-        <div>
-          <h2 className="text-xl font-bold mb-3 bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-            PrepMind AI
-          </h2>
-          <p className="text-gray-400 text-sm">
-            AI-powered platform to help you crack interviews, build skills, and accelerate your career growth.
-          </p>
-        </div>
-
-        {/* Quick Links */}
-        <div>
-          <h3 className="font-semibold mb-3">Quick Links</h3>
-          <ul className="space-y-2 text-gray-400 text-sm">
-            <li className="hover:text-white transition cursor-pointer">Home</li>
-            <li className="hover:text-white transition cursor-pointer">Features</li>
-            <li className="hover:text-white transition cursor-pointer">FAQ</li>
-            <li className="hover:text-white transition cursor-pointer">Contact</li>
-          </ul>
-        </div>
-
-        {/* Resources */}
-        <div>
-          <h3 className="font-semibold mb-3">Resources</h3>
-          <ul className="space-y-2 text-gray-400 text-sm">
-            <li className="hover:text-white transition cursor-pointer">Interview Prep</li>
-            <li className="hover:text-white transition cursor-pointer">Career Guidance</li>
-            <li className="hover:text-white transition cursor-pointer">Resume Builder</li>
-            <li className="hover:text-white transition cursor-pointer">Blog</li>
-          </ul>
-        </div>
-
-        {/* Social */}
-        <div>
-          <h3 className="font-semibold mb-3">Connect</h3>
-          <div className="flex gap-4 text-xl text-gray-400">
-            <FaGithub className="hover:text-white hover:scale-110 transition cursor-pointer" />
-            <FaLinkedin className="hover:text-white hover:scale-110 transition cursor-pointer" />
-            <FaTwitter className="hover:text-white hover:scale-110 transition cursor-pointer" />
+          {/* Links */}
+          <div className='grid grid-cols-2 gap-8 md:col-span-2'>
+            <div>
+              <h4 className='font-semibold text-white mb-4'>Platform</h4>
+              <ul className='space-y-3 text-sm'>
+                <li><a href="#" className='text-gray-400 hover:text-white transition'>Features</a></li>
+                <li><a href="#" className='text-gray-400 hover:text-white transition'>Pricing</a></li>
+                <li><a href="#" className='text-gray-400 hover:text-white transition'>Dashboard</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className='font-semibold text-white mb-4'>Support</h4>
+              <ul className='space-y-3 text-sm'>
+                <li><a href="#" className='text-gray-400 hover:text-white transition'>Help Center</a></li>
+                <li><a href="#" className='text-gray-400 hover:text-white transition'>Contact Us</a></li>
+                <li><a href="#" className='text-gray-400 hover:text-white transition'>Privacy & Terms</a></li>
+              </ul>
+            </div>
           </div>
         </div>
 
-      </div>
+        {/* Copyright */}
+   <div className='mt-12 pt-8 border-t border-gray-800 flex-col md:flex-row justify-between items-center gap-4'>
+  <p className='text-gray-500 text-sm'>
+    Built for Indian students and freshers
+  </p>
+  <p className='text-gray-500 text-sm'>
+    © 2026 PrepMind AI • v1
+  </p>
+</div>
 
-      {/* Divider */}
-      <div className="border-t border-white/10 mt-10 pt-5 text-center text-gray-400 text-sm">
-        © {new Date().getFullYear()} PrepMind AI. All rights reserved.
       </div>
-
     </footer>
-    
-    </>
+  )
+}
 
-   
-  );
-};
-
-export default Footer;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export default Footer

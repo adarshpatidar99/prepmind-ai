@@ -930,347 +930,924 @@
 
 
 
-import React from "react";
-import { GrOptimize } from "react-icons/gr";
-import { BiShoppingBag } from "react-icons/bi";
-import { FaLaptopCode } from "react-icons/fa6";
-import { motion } from "framer-motion";
-import Chart from '../components/dashboard/Chart'
+// import React from "react";
+// import { GrOptimize } from "react-icons/gr";
+// import { BiShoppingBag } from "react-icons/bi";
+// import { FaLaptopCode } from "react-icons/fa6";
+// import { motion } from "framer-motion";
+// import Chart from '../components/dashboard/Chart'
 
-const cardVariant = {
-  hidden: { opacity: 0, y: 15 },
-  visible: (i) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.12, duration: 0.5 },
-  }),
-};
+// const cardVariant = {
+//   hidden: { opacity: 0, y: 15 },
+//   visible: (i) => ({
+//     opacity: 1,
+//     y: 0,
+//     transition: { delay: i * 0.12, duration: 0.5 },
+//   }),
+// };
+
+// const IndustryInsights = () => {
+//   return (
+//     <div className="min-h-screen px-6 py-10 text-white bg-gradient-to-br from-purple-900 via-black to-indigo-900">
+
+//       {/* HEADER */}
+//       <div className="mb-10 mt-10">
+//         {/* <h1 className="text-3xl font-bold">
+//           Industry <span className="text-cyan-300">Insights</span>
+//         </h1> */}
+//         <h1 className="text-3xl font-bold">
+//   Industry{" "}
+//   <span className="text-indigo-300 drop-shadow-[0_0_10px_rgba(99,102,241,0.6)]">
+//     Insights
+//   </span>
+// </h1>
+//         <p className="text-gray-400 text-sm">Last Updated: 11/05/2026</p>
+//       </div>
+
+//       {/* CARDS */}
+//       {/* <div className="flex flex-wrap gap-5"> */}
+//       <div className="flex flex-nowrap gap-5  items-stretch">
+
+//         {/* CARD 1 */}
+//         <motion.div
+//           custom={1}
+//           initial="hidden"
+//           animate="visible"
+//           variants={cardVariant}
+        
+//           whileHover={{
+//             scale: 1.06,
+//             boxShadow: "0 0 25px rgba(99,102,241,0.25)",
+//             borderColor: "rgba(99,102,241,0.4)"
+//           }}
+//            className="w-[260px] p-4 rounded-xl bg-white/5 border border-white/10"
+//         >
+//           <div className="flex justify-between items-center">
+//             <p className="text-xs text-gray-400">Market Outlook</p>
+//             <GrOptimize className="text-cyan-300" />
+//           </div>
+
+//           <h2 className="text-lg font-bold mt-2 text-green-400">
+//             Positive
+//           </h2>
+
+//           <p className="text-xs text-gray-400 mt-1">
+//             Next Update in 7 days
+//           </p>
+//         </motion.div>
+
+
+//         {/* CARD 2 */}
+//         <motion.div
+//           custom={1}
+//           initial="hidden"
+//           animate="visible"
+//           variants={cardVariant}
+//           whileHover={{
+//             scale: 1.06,
+//             boxShadow: "0 0 25px rgba(99,102,241,0.25)",
+//             borderColor: "rgba(99,102,241,0.4)"
+//           }}
+//           className="w-[260px] p-4 rounded-xl bg-white/5 border border-white/10"
+//         >
+//           <div className="flex justify-between">
+//             <p className="text-xs text-gray-400">Industry Growth</p>
+//             <span className="text-cyan-300">📈</span>
+//           </div>
+
+//           <h2 className="text-lg font-bold mt-2 text-cyan-300">
+//             72%
+//           </h2>
+
+//           <div className="w-full h-1.5 bg-white/10 rounded-full mt-3 overflow-hidden">
+//             <motion.div
+//               initial={{ width: 0 }}
+//               animate={{ width: "72%" }}
+//               transition={{ duration: 1.2 }}
+//               className="h-full bg-gradient-to-r from-cyan-400 to-indigo-500"
+//             />
+//           </div>
+//         </motion.div>
+
+//         {/* CARD 3 */}
+//         <motion.div
+//           custom={2}
+//           initial="hidden"
+//           animate="visible"
+//           variants={cardVariant}
+//           whileHover={{
+//             scale: 1.06,
+//             boxShadow: "0 0 25px rgba(250,204,21,0.2)",
+//             borderColor: "rgba(250,204,21,0.4)"
+//           }}
+//           className="w-[260px] p-4 rounded-xl bg-white/5 border border-white/10"
+//         >
+//           <div className="flex justify-between">
+//             <p className="text-xs text-gray-400">Demand Level</p>
+//             <BiShoppingBag className="text-yellow-300" />
+//           </div>
+
+//           <h2 className="text-lg font-bold mt-2 text-yellow-300">
+//             Medium
+//           </h2>
+
+//           <div className="w-full h-1.5 bg-white/10 rounded-full mt-3 overflow-hidden">
+//             <motion.div
+//               initial={{ width: 0 }}
+//               animate={{ width: "55%" }}
+//               transition={{ duration: 1.2 }}
+//               className="h-full bg-gradient-to-r from-yellow-400 to-orange-500"
+//             />
+//           </div>
+//         </motion.div>
+
+//         {/* CARD 4 */}
+//         <motion.div
+//           custom={3}
+//           initial="hidden"
+//           animate="visible"
+//           variants={cardVariant}
+//           whileHover={{
+//             scale: 1.06,
+//             boxShadow: "0 0 25px rgba(99,102,241,0.25)",
+//             borderColor: "rgba(99,102,241,0.4)"
+//           }}
+//           className="w-[260px] p-4 rounded-xl bg-white/5 border border-white/10"
+//         >
+//           <div className="flex justify-between">
+//             <p className="text-xs text-gray-400">Top Skills</p>
+//             <FaLaptopCode className="text-indigo-300" />
+//           </div>
+
+//           <div className="mt-3 flex flex-wrap gap-2 text-xs">
+//             {["Python", "Cloud", "AI/ML", "AWS", "DSA"].map((skill, i) => (
+//               <motion.span
+//                 key={i}
+//                 whileHover={{
+//                   scale: 1.12,
+//                   backgroundColor: "rgba(99,102,241,0.3)"
+//                 }}
+//                 className="px-2 py-1 bg-indigo-500/20 border border-indigo-400/30 rounded-full transition"
+//               >
+//                 {skill}
+//               </motion.span>
+//             ))}
+//           </div>
+//         </motion.div>
+
+//       </div>
+
+//       {/* MINI ANALYTICS */}
+//       {/* <div className="mt-10 flex flex-wrap gap-4">
+
+//         {[
+//           { name: "Frontend", value: 80, color: "cyan-400" },
+//           { name: "Backend", value: 65, color: "indigo-400" },
+//           { name: "AI/ML", value: 90, color: "pink-400" },
+//         ].map((item, i) => (
+//           <motion.div
+//             key={i}
+//             initial={{ opacity: 0, y: 10 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ delay: i * 0.2 }}
+//             whileHover={{
+//               scale: 1.05,
+//               boxShadow: "0 0 20px rgba(255,255,255,0.08)"
+//             }}
+//             className="w-[200px] p-3 rounded-lg bg-white/5 border border-white/10 "
+//           >
+//             <p className="text-xs text-gray-400">{item.name}</p>
+
+//             <div className="flex justify-between mt-1">
+//               <span className="text-sm font-bold">{item.value}%</span>
+//               <span className="text-xs text-gray-300">High</span>
+//             </div>
+
+//             <div className="h-1 bg-white/10 mt-2 rounded-full overflow-hidden">
+//               <motion.div
+//                 initial={{ width: 0 }}
+//                 animate={{ width: `${item.value}%` }}
+//                 transition={{ duration: 1 }}
+//                 className={`h-full bg-${item.color}`}
+//               />
+//             </div>
+//           </motion.div>
+//         ))}
+
+//       </div> */}
+//       <div className="mt-10 flex flex-wrap gap-4">
+
+//   {[
+//     { name: "Frontend", value: 80, color: "cyan-400" },
+//     { name: "Backend", value: 65, color: "indigo-400" },
+//     { name: "AI/ML", value: 90, color: "pink-400" },
+//   ].map((item, i) => (
+//     <motion.div
+//       key={i}
+//       initial={{ opacity: 0, y: 10 }}
+//       animate={{ opacity: 1, y: 0 }}
+//       transition={{
+//         delay: i * 0.1,
+//         duration: 0.35,
+//         ease: "easeOut",
+//       }}
+
+//       whileHover={{
+//         scale: 1.05,
+//         boxShadow: "0 10px 30px rgba(99,102,241,0.15)",
+//       }}
+
+//       whileTap={{ scale: 0.98 }}
+
+//       className="w-[200px] p-3 rounded-lg bg-white/5 border border-white/10
+//                  backdrop-blur-md cursor-pointer
+//                  transform-gpu will-change-transform
+//                  transition-all duration-150 ease-out
+//                  hover:border-indigo-400/30"
+//     >
+//       <p className="text-xs text-gray-400">{item.name}</p>
+
+//       <div className="flex justify-between mt-1">
+//         <span className="text-sm font-bold">{item.value}%</span>
+//         <span className="text-xs text-gray-300">High</span>
+//       </div>
+
+//       <div className="h-1 bg-white/10 mt-2 rounded-full overflow-hidden">
+//         <motion.div
+//           initial={{ width: 0 }}
+//           animate={{ width: `${item.value}%` }}
+//           transition={{ duration: 0.8 }}
+//           className={`h-full bg-${item.color}`}
+//         />
+//       </div>
+//     </motion.div>
+//   ))}
+//      </div>
+
+//       <div className="mt-10">
+//          <Chart />
+//       </div>
+      
+//       {/* <div className="">
+//          <h2>Key Industry Trends</h2>
+//          <ul>
+//           <li>AI/ML</li>
+//           <li>Cloud Computing</li>
+//           <li>DevOps</li>
+//           <li>Cybersecurity</li>
+//           <li>Remote Work</li>
+//          </ul>
+//       </div>
+
+//       <div className="">
+//         <h2 className="">Recommended Skills</h2>
+//         <p className="">Skills to consider developing</p>
+//         <a className="">Python</a>
+//         <a className="">Javascipt</a>
+//         <a className="">AWS</a>
+//         <a className="">Docker</a>
+//         <a className="">Kubernates</a>
+//       </div> */}
+
+ 
+
+//       <div className="mt-10 grid md:grid-cols-2 gap-6">
+
+//   {/* INDUSTRY TRENDS */}
+//   <div className="p-5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md
+//                   hover:border-indigo-400/30 hover:shadow-[0_10px_30px_rgba(99,102,241,0.2)]
+//                   transition-all duration-200">
+
+//     <h2 className="text-lg font-semibold text-indigo-300 mb-4">
+//        Key Industry Trends
+//     </h2>
+
+//     <ul className="space-y-2">
+//       {["AI/ML", "Cloud Computing", "DevOps", "Cybersecurity", "Remote Work"].map((item, i) => (
+//         <li
+//           key={i}
+//           className="flex items-center gap-2 text-sm text-gray-300
+//                      hover:text-white transition duration-150"
+//         >
+//           <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></span>
+//           {item}
+//         </li>
+//       ))}
+//     </ul>
+//   </div>
+
+
+//   {/* RECOMMENDED SKILLS */}
+//   <div className="p-5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md
+//                   hover:border-cyan-400/30 hover:shadow-[0_10px_30px_rgba(34,211,238,0.2)]
+//                   transition-all duration-200">
+
+//     <h2 className="text-lg font-semibold text-cyan-300">
+//        Recommended Skills
+//     </h2>
+
+//     <p className="text-xs text-gray-400 mt-1 mb-4">
+//       Skills to consider developing
+//     </p>
+
+//     <div className="flex flex-wrap gap-2">
+//       {["Python", "JavaScript", "AWS", "Docker", "Kubernetes"].map((skill, i) => (
+//         <a
+//           key={i}
+//           href="#"
+//           className="px-3 py-1 text-xs rounded-full
+//                      bg-cyan-500/10 border border-cyan-400/20 text-gray-200
+//                      hover:bg-cyan-400/20 hover:scale-105
+//                      transition-all duration-150 cursor-pointer"
+//         >
+//           {skill}
+//         </a>
+//       ))}
+//     </div>
+//   </div>
+
+// </div>
+
+ 
+
+
+//     </div>
+//   );
+// };
+
+// export default IndustryInsights;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useState } from "react";
+// import { GrOptimize, BiTrendingUp, BsBriefcase, HiOutlineAcademicCap } from "react-icons";
+// import { motion } from "framer-motion";
+// import { Download, Filter } from "lucide-react";
+// import Chart from '../components/dashboard/Chart'
+
+// const IndustryInsights = () => {
+//   const [activeTab, setActiveTab] = useState("Overview")
+
+//   const tabs = ["Overview", "Skills", "Salaries", "Jobs"]
+
+//   const stats = [
+//     { label: "Industry Growth", value: "72%", change: "+4.2%", icon: <BiTrendingUp />, color: "text-green-600" },
+//     { label: "Active Job Posts", value: "12.4K", change: "+18%", icon: <BsBriefcase />, color: "text-blue-600" },
+//     { label: "Demand Score", value: "8.7/10", change: "+0.3", icon: <GrOptimize />, color: "text-purple-600" },
+//     { label: "Avg. Salary", value: "₹18.5 LPA", change: "+9%", icon: <HiOutlineAcademicCap />, color: "text-orange-600" },
+//   ]
+
+//   return (
+//     <div className="min-h-screen bg-[#F7F9FC] px-6 md:px-10 py-8">
+
+//       {/* HEADER */}
+//       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+//         <div>
+//           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+//             Industry Insights
+//           </h1>
+//           <p className="text-gray-500 text-sm">Data updated daily • Last sync: 11/05/2026</p>
+//         </div>
+
+//         <div className="flex gap-3">
+//           <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border-gray-200 text-sm font-medium hover:bg-gray-50 transition">
+//             <Filter size={16} /> Filter: Software Engineer
+//           </button>
+//           <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0A66C2] text-white text-sm font-semibold hover:bg-blue-700 transition">
+//             <Download size={16} /> Export
+//           </button>
+//         </div>
+//       </div>
+
+//       {/* TABS */}
+//       <div className="flex gap-2 mb-8 border-b border-gray-200">
+//         {tabs.map((tab) => (
+//           <button
+//             key={tab}
+//             onClick={() => setActiveTab(tab)}
+//             className={`px-4 py-3 text-sm font-medium transition relative ${
+//               activeTab === tab ? "text-[#0A66C2]" : "text-gray-500 hover:text-gray-900"
+//             }`}
+//           >
+//             {tab}
+//             {activeTab === tab && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#0A66C2]"></span>}
+//           </button>
+//         ))}
+//       </div>
+
+//       {/* STAT CARDS ROW */}
+//       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+//         {stats.map((stat, i) => (
+//           <motion.div
+//             key={i}
+//             initial={{ opacity: 0, y: 10 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ delay: i * 0.08 }}
+//             className="p-5 rounded-xl bg-white border-gray-200 hover:shadow-md transition"
+//           >
+//             <div className="flex items-center justify-between mb-3">
+//               <p className="text-sm text-gray-500">{stat.label}</p>
+//               <span className={`text-xl ${stat.color}`}>{stat.icon}</span>
+//             </div>
+//             <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
+//             <p className={`text-xs mt-1 ${stat.color}`}>▲ {stat.change} vs last month</p>
+//           </motion.div>
+//         ))}
+//       </div>
+
+//       {/* MAIN GRID: CHART + SIDE PANEL */}
+//       <div className="grid lg:grid-cols-3 gap-6">
+        
+//         {/* LEFT: CHART - 2 cols */}
+//         <div className="lg:col-span-2 bg-white border-gray-200 rounded-xl p-6">
+//           <div className="flex items-center justify-between mb-4">
+//             <h2 className="font-semibold text-gray-900">Hiring Trend - Last 12 Months</h2>
+//             <select className="text-sm border-gray-200 rounded-lg px-2 py-1">
+//               <option>All Roles</option>
+//               <option>Frontend</option>
+//               <option>Backend</option>
+//               <option>AI/ML</option>
+//             </select>
+//           </div>
+//           <Chart />
+//         </div>
+
+//         {/* RIGHT: TOP SKILLS */}
+//         <div className="bg-white border-gray-200 rounded-xl p-6">
+//           <h2 className="font-semibold text-gray-900 mb-4">Top In-Demand Skills</h2>
+//           <div className="space-y-4">
+//             {[
+//               { skill: "Python", percent: 92 },
+//               { skill: "AWS", percent: 85 },
+//               { skill: "React", percent: 78 },
+//               { skill: "Docker", percent: 71 },
+//               { skill: "AI/ML", percent: 68 },
+//             ].map((item, i) => (
+//               <div key={i}>
+//                 <div className="flex justify-between text-sm mb-1">
+//                   <span className="text-gray-700">{item.skill}</span>
+//                   <span className="text-gray-500">{item.percent}%</span>
+//                 </div>
+//                 <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+//                   <motion.div 
+//                     initial={{ width: 0 }}
+//                     animate={{ width: `${item.percent}%` }}
+//                     transition={{ duration: 0.8, delay: i * 0.1 }}
+//                     className="h-full bg-gradient-to-r from-[#0A66C2] to-[#004182] rounded-full"
+//                   />
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* BOTTOM 2 COLUMN GRID */}
+//       <div className="grid lg:grid-cols-2 gap-6 mt-6">
+        
+//         {/* Key Trends */}
+//         <div className="bg-white border-gray-200 rounded-xl p-6">
+//           <h2 className="font-semibold text-gray-900 mb-4">Key Industry Trends</h2>
+//           <div className="space-y-3">
+//             {[
+//               { title: "AI/ML Integration", desc: "87% of job postings now mention AI tools" },
+//               { title: "Remote-First Roles", desc: "Remote jobs increased by 34% this quarter" },
+//               { title: "Cloud Native", desc: "AWS, Azure, GCP skills are top requirements" },
+//             ].map((trend, i) => (
+//               <div key={i} className="p-3 rounded-lg bg-blue-50 border-blue-100">
+//                 <p className="font-medium text-sm text-gray-900">{trend.title}</p>
+//                 <p className="text-xs text-gray-600 mt-1">{trend.desc}</p>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+
+//         {/* Career Paths */}
+//         <div className="bg-white border-gray-200 rounded-xl p-6">
+//           <h2 className="font-semibold text-gray-900 mb-4">Recommended Career Paths</h2>
+//           <div className="space-y-3">
+//             {[
+//               { path: "AI Engineer", salary: "₹22-35 LPA", growth: "High" },
+//               { path: "Cloud Architect", salary: "₹25-40 LPA", growth: "Very High" },
+//               { path: "Full Stack Developer", salary: "₹12-22 LPA", growth: "Stable" },
+//             ].map((career, i) => (
+//               <div key={i} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+//                 <div>
+//                   <p className="font-medium text-sm text-gray-900">{career.path}</p>
+//                   <p className="text-xs text-gray-500">{career.salary}</p>
+//                 </div>
+//                 <span className={`text-xs px-2 py-1 rounded-full ${
+//                   career.growth === "High" ? "bg-green-100 text-green-700" : 
+//                   career.growth === "Very High" ? "bg-blue-100 text-blue-700" : 
+//                   "bg-gray-100 text-gray-700"
+//                 }`}>
+//                   {career.growth}
+//                 </span>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default IndustryInsights;
+
+
+
+
+
+
+
+// import React, { useState } from "react";
+// import { GrOptimize } from "react-icons/gr";
+// import { BiTrendingUp } from "react-icons/bi";
+// import { BsBriefcase } from "react-icons/bs";
+// import { HiOutlineAcademicCap } from "react-icons/hi";
+// import { motion } from "framer-motion";
+// import { Download, Filter } from "lucide-react";
+// import Chart from '../components/dashboard/Chart'
+
+// const IndustryInsights = () => {
+//   const [activeTab, setActiveTab] = useState("Overview")
+
+//   const tabs = ["Overview", "Skills", "Salaries", "Jobs"]
+
+//   const stats = [
+//     { label: "Industry Growth", value: "72%", change: "+4.2%", icon: <BiTrendingUp />, color: "text-green-600" },
+//     { label: "Active Job Posts", value: "12.4K", change: "+18%", icon: <BsBriefcase />, color: "text-blue-600" },
+//     { label: "Demand Score", value: "8.7/10", change: "+0.3", icon: <GrOptimize />, color: "text-purple-600" },
+//     { label: "Avg. Salary", value: "₹18.5 LPA", change: "+9%", icon: <HiOutlineAcademicCap />, color: "text-orange-600" },
+//   ]
+
+//   return (
+//     <div className="min-h-screen bg-[#F7F9FC] px-6 md:px-10 py-22">
+
+//       {/* HEADER */}
+//       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+//         <div>
+//           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+//             Industry Insights
+//           </h1>
+//           <p className="text-gray-500 text-sm">Data updated daily • Last sync: 11/05/2026</p>
+//         </div>
+
+//         <div className="flex gap-3">
+//           <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border-gray-200 text-sm font-medium hover:bg-gray-50 transition">
+//             <Filter size={16} /> Filter: Software Engineer
+//           </button>
+//           <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0A66C2] text-white text-sm font-semibold hover:bg-blue-700 transition">
+//             <Download size={16} /> Export
+//           </button>
+//         </div>
+//       </div>
+
+//       {/* TABS */}
+//       <div className="flex gap-2 mb-8 border-b border-gray-200">
+//         {tabs.map((tab) => (
+//           <button
+//             key={tab}
+//             onClick={() => setActiveTab(tab)}
+//             className={`px-4 py-3 text-sm font-medium transition relative ${
+//               activeTab === tab ? "text-[#0A66C2]" : "text-gray-500 hover:text-gray-900"
+//             }`}
+//           >
+//             {tab}
+//             {activeTab === tab && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#0A66C2]"></span>}
+//           </button>
+//         ))}
+//       </div>
+
+//       {/* STAT CARDS ROW */}
+//       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+//         {stats.map((stat, i) => (
+//           <motion.div
+//             key={i}
+//             initial={{ opacity: 0, y: 10 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ delay: i * 0.08 }}
+//             className="p-5 rounded-xl bg-white border-gray-200 hover:shadow-md transition"
+//           >
+//             <div className="flex items-center justify-between mb-3">
+//               <p className="text-sm text-gray-500">{stat.label}</p>
+//               <span className={`text-xl ${stat.color}`}>{stat.icon}</span>
+//             </div>
+//             <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
+//             <p className={`text-xs mt-1 ${stat.color}`}>▲ {stat.change} vs last month</p>
+//           </motion.div>
+//         ))}
+//       </div>
+
+//       {/* MAIN GRID: CHART + SIDE PANEL */}
+//       <div className="grid lg:grid-cols-3 gap-6">
+        
+//         {/* LEFT: CHART - 2 cols */}
+//         <div className="lg:col-span-2 bg-white border-gray-200 rounded-xl p-6">
+//           <div className="flex items-center justify-between mb-4">
+//             <h2 className="font-semibold text-gray-900">Hiring Trend - Last 12 Months</h2>
+//             <select className="text-sm border-gray-200 rounded-lg px-2 py-1">
+//               <option>All Roles</option>
+//               <option>Frontend</option>
+//               <option>Backend</option>
+//               <option>AI/ML</option>
+//             </select>
+//           </div>
+//           <Chart />
+//         </div>
+
+//         {/* RIGHT: TOP SKILLS */}
+//         <div className="bg-white border border-gray-200 rounded-xl p-6">
+//           <h2 className="font-semibold text-gray-900 mb-4">Top In-Demand Skills</h2>
+//           <div className="space-y-4">
+//             {[
+//               { skill: "Python", percent: 92 },
+//               { skill: "AWS", percent: 85 },
+//               { skill: "React", percent: 78 },
+//               { skill: "Docker", percent: 71 },
+//               { skill: "AI/ML", percent: 68 },
+//             ].map((item, i) => (
+//               <div key={i}>
+//                 <div className="flex justify-between text-sm mb-1">
+//                   <span className="text-gray-700">{item.skill}</span>
+//                   <span className="text-gray-500">{item.percent}%</span>
+//                 </div>
+//                 <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+//                   <motion.div 
+//                     initial={{ width: 0 }}
+//                     animate={{ width: `${item.percent}%` }}
+//                     transition={{ duration: 0.8, delay: i * 0.1 }}
+//                     className="h-full bg-gradient-to-r from-[#0A66C2] to-[#004182] rounded-full"
+//                   />
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* BOTTOM 2 COLUMN GRID */}
+//       <div className="grid lg:grid-cols-2 gap-6 mt-6">
+        
+//         {/* Key Trends */}
+//         <div className="bg-white border-gray-200 rounded-xl p-6">
+//           <h2 className="font-semibold text-gray-900 mb-4">Key Industry Trends</h2>
+//           <div className="space-y-3">
+//             {[
+//               { title: "AI/ML Integration", desc: "87% of job postings now mention AI tools" },
+//               { title: "Remote-First Roles", desc: "Remote jobs increased by 34% this quarter" },
+//               { title: "Cloud Native", desc: "AWS, Azure, GCP skills are top requirements" },
+//             ].map((trend, i) => (
+//               <div key={i} className="p-3 rounded-lg bg-blue-50 border-blue-100">
+//                 <p className="font-medium text-sm text-gray-900">{trend.title}</p>
+//                 <p className="text-xs text-gray-600 mt-1">{trend.desc}</p>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+
+//         {/* Career Paths */}
+//         <div className="bg-white border border-gray-200 rounded-xl p-6">
+//           <h2 className="font-semibold text-gray-900 mb-4">Recommended Career Paths</h2>
+//           <div className="space-y-3">
+//             {[
+//               { path: "AI Engineer", salary: "₹22-35 LPA", growth: "High" },
+//               { path: "Cloud Architect", salary: "₹25-40 LPA", growth: "Very High" },
+//               { path: "Full Stack Developer", salary: "₹12-22 LPA", growth: "Stable" },
+//             ].map((career, i) => (
+//               <div key={i} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+//                 <div>
+//                   <p className="font-medium text-sm text-gray-900">{career.path}</p>
+//                   <p className="text-xs text-gray-500">{career.salary}</p>
+//                 </div>
+//                 <span className={`text-xs px-2 py-1 rounded-full ${
+//                   career.growth === "High" ? "bg-green-100 text-green-700" : 
+//                   career.growth === "Very High" ? "bg-blue-100 text-blue-700" : 
+//                   "bg-gray-100 text-gray-700"
+//                 }`}>
+//                   {career.growth}
+//                 </span>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default IndustryInsights;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useState } from "react";
+import { GrOptimize } from "react-icons/gr";
+import { BiTrendingUp } from "react-icons/bi";
+import { BsBriefcase } from "react-icons/bs";
+import { HiOutlineAcademicCap } from "react-icons/hi";
+import { motion } from "framer-motion";
+import { Download, Filter } from "lucide-react";
+import Chart from '../components/dashboard/Chart'
+import Navbar from "../components/common/Navbar";
 
 const IndustryInsights = () => {
+  const [activeTab, setActiveTab] = useState("Overview")
+
+  const tabs = ["Overview", "Skills", "Salaries", "Jobs"]
+
+  const stats = [
+    { label: "Industry Growth", value: "72%", change: "+4.2%", icon: <BiTrendingUp />, color: "text-green-600" },
+    { label: "Active Job Posts", value: "12.4K", change: "+18%", icon: <BsBriefcase />, color: "text-blue-600" },
+    { label: "Demand Score", value: "8.7/10", change: "+0.3", icon: <GrOptimize />, color: "text-purple-600" },
+    { label: "Avg. Salary", value: "₹18.5 LPA", change: "+9%", icon: <HiOutlineAcademicCap />, color: "text-orange-600" },
+  ]
+
   return (
-    <div className="min-h-screen px-6 py-10 text-white bg-gradient-to-br from-purple-900 via-black to-indigo-900">
+
+    <div>
+    <Navbar />    
+
+    <div className="min-h-screen bg-[#F7F9FC] px-4 sm:px-6 md:px-10 py-20"> {/* py-22 -> py-8, added responsive px */}
 
       {/* HEADER */}
-      <div className="mb-10 mt-10">
-        {/* <h1 className="text-3xl font-bold">
-          Industry <span className="text-cyan-300">Insights</span>
-        </h1> */}
-        <h1 className="text-3xl font-bold">
-  Industry{" "}
-  <span className="text-indigo-300 drop-shadow-[0_0_10px_rgba(99,102,241,0.6)]">
-    Insights
-  </span>
-</h1>
-        <p className="text-gray-400 text-sm">Last Updated: 11/05/2026</p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-2 mb-8">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+            Industry Insights
+          </h1>
+          <p className="text-gray-500 text-sm">Data updated daily • Last sync: 11/05/2026</p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto"> {/* stack on mobile */}
+          <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white border-gray-200 text-sm font-medium hover:bg-gray-50 transition w-full sm:w-auto"> {/* added border + w-full */}
+            <Filter size={16} /> <span className="truncate">Filter: Software Engineer</span>
+          </button>
+          <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#0A66C2] text-white text-sm font-semibold hover:bg-blue-700 transition w-full sm:w-auto"> {/* w-full */}
+            <Download size={16} /> Export
+          </button>
+        </div>
       </div>
 
-      {/* CARDS */}
-      {/* <div className="flex flex-wrap gap-5"> */}
-      <div className="flex flex-nowrap gap-5  items-stretch">
-
-        {/* CARD 1 */}
-        <motion.div
-          custom={1}
-          initial="hidden"
-          animate="visible"
-          variants={cardVariant}
-        
-          whileHover={{
-            scale: 1.06,
-            boxShadow: "0 0 25px rgba(99,102,241,0.25)",
-            borderColor: "rgba(99,102,241,0.4)"
-          }}
-           className="w-[260px] p-4 rounded-xl bg-white/5 border border-white/10"
-        >
-          <div className="flex justify-between items-center">
-            <p className="text-xs text-gray-400">Market Outlook</p>
-            <GrOptimize className="text-cyan-300" />
-          </div>
-
-          <h2 className="text-lg font-bold mt-2 text-green-400">
-            Positive
-          </h2>
-
-          <p className="text-xs text-gray-400 mt-1">
-            Next Update in 7 days
-          </p>
-        </motion.div>
-
-
-        {/* CARD 2 */}
-        <motion.div
-          custom={1}
-          initial="hidden"
-          animate="visible"
-          variants={cardVariant}
-          whileHover={{
-            scale: 1.06,
-            boxShadow: "0 0 25px rgba(99,102,241,0.25)",
-            borderColor: "rgba(99,102,241,0.4)"
-          }}
-          className="w-[260px] p-4 rounded-xl bg-white/5 border border-white/10"
-        >
-          <div className="flex justify-between">
-            <p className="text-xs text-gray-400">Industry Growth</p>
-            <span className="text-cyan-300">📈</span>
-          </div>
-
-          <h2 className="text-lg font-bold mt-2 text-cyan-300">
-            72%
-          </h2>
-
-          <div className="w-full h-1.5 bg-white/10 rounded-full mt-3 overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: "72%" }}
-              transition={{ duration: 1.2 }}
-              className="h-full bg-gradient-to-r from-cyan-400 to-indigo-500"
-            />
-          </div>
-        </motion.div>
-
-        {/* CARD 3 */}
-        <motion.div
-          custom={2}
-          initial="hidden"
-          animate="visible"
-          variants={cardVariant}
-          whileHover={{
-            scale: 1.06,
-            boxShadow: "0 0 25px rgba(250,204,21,0.2)",
-            borderColor: "rgba(250,204,21,0.4)"
-          }}
-          className="w-[260px] p-4 rounded-xl bg-white/5 border border-white/10"
-        >
-          <div className="flex justify-between">
-            <p className="text-xs text-gray-400">Demand Level</p>
-            <BiShoppingBag className="text-yellow-300" />
-          </div>
-
-          <h2 className="text-lg font-bold mt-2 text-yellow-300">
-            Medium
-          </h2>
-
-          <div className="w-full h-1.5 bg-white/10 rounded-full mt-3 overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: "55%" }}
-              transition={{ duration: 1.2 }}
-              className="h-full bg-gradient-to-r from-yellow-400 to-orange-500"
-            />
-          </div>
-        </motion.div>
-
-        {/* CARD 4 */}
-        <motion.div
-          custom={3}
-          initial="hidden"
-          animate="visible"
-          variants={cardVariant}
-          whileHover={{
-            scale: 1.06,
-            boxShadow: "0 0 25px rgba(99,102,241,0.25)",
-            borderColor: "rgba(99,102,241,0.4)"
-          }}
-          className="w-[260px] p-4 rounded-xl bg-white/5 border border-white/10"
-        >
-          <div className="flex justify-between">
-            <p className="text-xs text-gray-400">Top Skills</p>
-            <FaLaptopCode className="text-indigo-300" />
-          </div>
-
-          <div className="mt-3 flex flex-wrap gap-2 text-xs">
-            {["Python", "Cloud", "AI/ML", "AWS", "DSA"].map((skill, i) => (
-              <motion.span
-                key={i}
-                whileHover={{
-                  scale: 1.12,
-                  backgroundColor: "rgba(99,102,241,0.3)"
-                }}
-                className="px-2 py-1 bg-indigo-500/20 border border-indigo-400/30 rounded-full transition"
-              >
-                {skill}
-              </motion.span>
-            ))}
-          </div>
-        </motion.div>
-
+      {/* TABS */}
+      <div className="flex gap-2 mb-8 border-b border-gray-200 overflow-x-auto"> {/* scroll on mobile */}
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-3 text-sm font-medium transition relative whitespace-nowrap flex-shrink-0 ${  activeTab === tab ? "text-[#0A66C2]" : "text-gray-500 hover:text-gray-900" }
+             
+            }`}
+          >
+            {tab}
+            {activeTab === tab && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#0A66C2]"></span>}
+          </button>
+        ))}
       </div>
 
-      {/* MINI ANALYTICS */}
-      {/* <div className="mt-10 flex flex-wrap gap-4">
-
-        {[
-          { name: "Frontend", value: 80, color: "cyan-400" },
-          { name: "Backend", value: 65, color: "indigo-400" },
-          { name: "AI/ML", value: 90, color: "pink-400" },
-        ].map((item, i) => (
+      {/* STAT CARDS ROW */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {stats.map((stat, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.2 }}
-            whileHover={{
-              scale: 1.05,
-              boxShadow: "0 0 20px rgba(255,255,255,0.08)"
-            }}
-            className="w-[200px] p-3 rounded-lg bg-white/5 border border-white/10 "
+            transition={{ delay: i * 0.08 }}
+            className="p-5 rounded-xl bg-white border-gray-200 hover:shadow-md transition" 
           >
-            <p className="text-xs text-gray-400">{item.name}</p>
-
-            <div className="flex justify-between mt-1">
-              <span className="text-sm font-bold">{item.value}%</span>
-              <span className="text-xs text-gray-300">High</span>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm text-gray-500">{stat.label}</p>
+              <span className={`text-xl ${stat.color}`}>{stat.icon}</span>
             </div>
-
-            <div className="h-1 bg-white/10 mt-2 rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${item.value}%` }}
-                transition={{ duration: 1 }}
-                className={`h-full bg-${item.color}`}
-              />
-            </div>
+            <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
+            <p className={`text-xs mt-1 ${stat.color}`}>▲ {stat.change} vs last month</p>
           </motion.div>
         ))}
-
-      </div> */}
-      <div className="mt-10 flex flex-wrap gap-4">
-
-  {[
-    { name: "Frontend", value: 80, color: "cyan-400" },
-    { name: "Backend", value: 65, color: "indigo-400" },
-    { name: "AI/ML", value: 90, color: "pink-400" },
-  ].map((item, i) => (
-    <motion.div
-      key={i}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        delay: i * 0.1,
-        duration: 0.35,
-        ease: "easeOut",
-      }}
-
-      whileHover={{
-        scale: 1.05,
-        boxShadow: "0 10px 30px rgba(99,102,241,0.15)",
-      }}
-
-      whileTap={{ scale: 0.98 }}
-
-      className="w-[200px] p-3 rounded-lg bg-white/5 border border-white/10
-                 backdrop-blur-md cursor-pointer
-                 transform-gpu will-change-transform
-                 transition-all duration-150 ease-out
-                 hover:border-indigo-400/30"
-    >
-      <p className="text-xs text-gray-400">{item.name}</p>
-
-      <div className="flex justify-between mt-1">
-        <span className="text-sm font-bold">{item.value}%</span>
-        <span className="text-xs text-gray-300">High</span>
       </div>
 
-      <div className="h-1 bg-white/10 mt-2 rounded-full overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${item.value}%` }}
-          transition={{ duration: 0.8 }}
-          className={`h-full bg-${item.color}`}
-        />
+      {/* MAIN GRID: CHART + SIDE PANEL */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        
+        {/* LEFT: CHART - 2 cols */}
+        <div className="lg:col-span-2 bg-white border border-gray-200 rounded-xl p-6"> {/* added border */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4"> {/* stack on mobile */}
+            <h2 className="font-semibold text-gray-900">Hiring Trend - Last 12 Months</h2>
+            <select className="text-sm border-gray-200 rounded-lg px-2 py-1 w-full sm:w-auto"> {/* w-full on mobile */}
+              <option>All Roles</option>
+              <option>Frontend</option>
+              <option>Backend</option>
+              <option>AI/ML</option>
+            </select>
+          </div>
+          <Chart />
+        </div>
+
+        {/* RIGHT: TOP SKILLS */}
+        <div className="bg-white border-gray-200 rounded-xl p-6">
+          <h2 className="font-semibold text-gray-900 mb-4">Top In-Demand Skills</h2>
+          <div className="space-y-4">
+            {[
+              { skill: "Python", percent: 92 },
+              { skill: "AWS", percent: 85 },
+              { skill: "React", percent: 78 },
+              { skill: "Docker", percent: 71 },
+              { skill: "AI/ML", percent: 68 },
+            ].map((item, i) => (
+              <div key={i}>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-700">{item.skill}</span>
+                  <span className="text-gray-500">{item.percent}%</span>
+                </div>
+                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${item.percent}%` }}
+                    transition={{ duration: 0.8, delay: i * 0.1 }}
+                    className="h-full bg-gradient-to-r from-[#0A66C2] to-[#004182] rounded-full"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </motion.div>
-  ))}
-     </div>
 
-      <div className="mt-10">
-         <Chart />
+      {/* BOTTOM 2 COLUMN GRID */}
+      <div className="grid lg:grid-cols-2 gap-6 mt-6">
+        
+        {/* Key Trends */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6"> {/* added border */}
+          <h2 className="font-semibold text-gray-900 mb-4">Key Industry Trends</h2>
+          <div className="space-y-3">
+            {[
+              { title: "AI/ML Integration", desc: "87% of job postings now mention AI tools" },
+              { title: "Remote-First Roles", desc: "Remote jobs increased by 34% this quarter" },
+              { title: "Cloud Native", desc: "AWS, Azure, GCP skills are top requirements" },
+            ].map((trend, i) => (
+              <div key={i} className="p-3 rounded-lg bg-blue-50 border-blue-100"> {/* added border */}
+                <p className="font-medium text-sm text-gray-900">{trend.title}</p>
+                <p className="text-xs text-gray-600 mt-1">{trend.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Career Paths */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6">
+          <h2 className="font-semibold text-gray-900 mb-4">Recommended Career Paths</h2>
+          <div className="space-y-3">
+            {[
+              { path: "AI Engineer", salary: "₹22-35 LPA", growth: "High" },
+              { path: "Cloud Architect", salary: "₹25-40 LPA", growth: "Very High" },
+              { path: "Full Stack Developer", salary: "₹12-22 LPA", growth: "Stable" },
+            ].map((career, i) => (
+              <div key={i} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                <div>
+                  <p className="font-medium text-sm text-gray-900">{career.path}</p>
+                  <p className="text-xs text-gray-500">{career.salary}</p>
+                </div>
+                <span className={`text-xs px-2 py-1 rounded-full flex-shrink-0 ${ /* prevent shrink */
+                  career.growth === "High" ? "bg-green-100 text-green-700" : 
+                  career.growth === "Very High" ? "bg-blue-100 text-blue-700" : 
+                  "bg-gray-100 text-gray-700"
+                }`}>
+                  {career.growth}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
-      
-      {/* <div className="">
-         <h2>Key Industry Trends</h2>
-         <ul>
-          <li>AI/ML</li>
-          <li>Cloud Computing</li>
-          <li>DevOps</li>
-          <li>Cybersecurity</li>
-          <li>Remote Work</li>
-         </ul>
-      </div>
-
-      <div className="">
-        <h2 className="">Recommended Skills</h2>
-        <p className="">Skills to consider developing</p>
-        <a className="">Python</a>
-        <a className="">Javascipt</a>
-        <a className="">AWS</a>
-        <a className="">Docker</a>
-        <a className="">Kubernates</a>
-      </div> */}
-
- 
-
-      <div className="mt-10 grid md:grid-cols-2 gap-6">
-
-  {/* INDUSTRY TRENDS */}
-  <div className="p-5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md
-                  hover:border-indigo-400/30 hover:shadow-[0_10px_30px_rgba(99,102,241,0.2)]
-                  transition-all duration-200">
-
-    <h2 className="text-lg font-semibold text-indigo-300 mb-4">
-       Key Industry Trends
-    </h2>
-
-    <ul className="space-y-2">
-      {["AI/ML", "Cloud Computing", "DevOps", "Cybersecurity", "Remote Work"].map((item, i) => (
-        <li
-          key={i}
-          className="flex items-center gap-2 text-sm text-gray-300
-                     hover:text-white transition duration-150"
-        >
-          <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></span>
-          {item}
-        </li>
-      ))}
-    </ul>
-  </div>
-
-
-  {/* RECOMMENDED SKILLS */}
-  <div className="p-5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md
-                  hover:border-cyan-400/30 hover:shadow-[0_10px_30px_rgba(34,211,238,0.2)]
-                  transition-all duration-200">
-
-    <h2 className="text-lg font-semibold text-cyan-300">
-       Recommended Skills
-    </h2>
-
-    <p className="text-xs text-gray-400 mt-1 mb-4">
-      Skills to consider developing
-    </p>
-
-    <div className="flex flex-wrap gap-2">
-      {["Python", "JavaScript", "AWS", "Docker", "Kubernetes"].map((skill, i) => (
-        <a
-          key={i}
-          href="#"
-          className="px-3 py-1 text-xs rounded-full
-                     bg-cyan-500/10 border border-cyan-400/20 text-gray-200
-                     hover:bg-cyan-400/20 hover:scale-105
-                     transition-all duration-150 cursor-pointer"
-        >
-          {skill}
-        </a>
-      ))}
     </div>
-  </div>
-
-</div>
-
- 
-
-
     </div>
   );
 };

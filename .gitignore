@@ -140,3 +140,7 @@ vite.config.ts.timestamp-*
 
 # Temporary generated files
 server/temp/
+
+logs/
+.env
+node_modules/

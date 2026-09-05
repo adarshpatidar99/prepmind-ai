@@ -1,6 +1,6 @@
-import express from 'express';
+import express from "express";
 import isAuth from "../middlewares/authMiddleware.js";
-
+import { aiRateLimiter } from "../middlewares/rateLimiter.js";
 import {
   getResume,
   generateResumePdf,
@@ -15,35 +15,33 @@ import {
   resumeDashboard,
   resumeAnalyze,
   resumeCorrection,
-  resumeSuggestions
+  resumeSuggestions,
 } from "../controllers/resumeController.js";
 
 const router = express.Router();
 
-// ===== CRUD =====
-router.post('/create', isAuth, createResume);    // check 
-router.get('/', isAuth, getAllResumes);  // check
-router.get('/:id', isAuth, getResume);   // check
-router.put('/:id', isAuth, updateResume);   // check
-router.delete('/:id', isAuth, deleteResume);   // check
-                                                                                     
-// ===== Resume Features =====
-router.get('/preview/:id', isAuth, previewResume);     // check
-router.put('/template/:id', isAuth, changeTemplate);  // check
-router.get('/pdf/:id', isAuth, generateResumePdf);  // check
+// Resume
+router.post("/create", isAuth, createResume);
+router.get("/getall", isAuth, getAllResumes);
+router.get("/get/:id", isAuth, getResume);
+router.put("/update/:id", isAuth, updateResume);
+router.delete("/delete/:id", isAuth, deleteResume);
 
-// ===== Public =====
-router.get('/u/:username', getPublicResume);   // for checking this need make new resume
-                             
-// ===== Analysis =====
-router.get('/analysis/:id', isAuth, fetchAnalyze); // check
-router.post('/analysis/ai/:id', isAuth, resumeAnalyze ); // check
+// Preview / Template / PDF
+router.get("/preview/:id", isAuth, previewResume);
+router.put("/template/:id", isAuth, changeTemplate);
+router.get("/pdf/:id", isAuth, generateResumePdf);
 
-// ===== AI Features ====
-router.post('/ai/optimize/:id', isAuth, resumeCorrection ); // check
-router.post('/ai/suggestions/:id', isAuth, resumeSuggestions);  // check
+// Public Resume
+router.get("/u/:username", getPublicResume);
 
-// ===== Dashboard =====
-router.get('/dashboard/:id', isAuth, resumeDashboard);  // check 
+// AI Resume
+router.post("/analysis/ai/:id", isAuth, aiRateLimiter, resumeAnalyze);
+router.post("/ai/optimize/:id", isAuth, aiRateLimiter, resumeCorrection);
+router.post("/ai/suggestions/:id", isAuth, aiRateLimiter, resumeSuggestions);
+router.get("/analysis/ai/:id", isAuth, fetchAnalyze);
 
-export default router;                                
+// Dashboard
+router.get("/dashboard/:id", isAuth, resumeDashboard);
+
+export default router;

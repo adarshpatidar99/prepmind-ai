@@ -1,1971 +1,1399 @@
-// import React, { useState } from 'react'
-// import Navbar from '../components/common/Navbar'
-// import { IoSaveSharp } from "react-icons/io5";
-// import { FaFileDownload } from "react-icons/fa";
+import React, { useState } from "react";
+import axios from "axios";
+import { Download, ArrowLeft } from "lucide-react";
+import {
+  Save,
+  Wand2,
+  Eye,
+  ChevronDown,
+  ChevronUp,
+  Sparkles,
+  Plus,
+  Trash2,
+} from "lucide-react";
 
-// const ResumeBuilder = () => {
+import {
+  BsPerson,
+  BsBriefcase,
+  BsMortarboard,
+  BsCodeSlash,
+  BsTrophy,
+} from "react-icons/bs";
 
-//    const [addExperience, setAddExperience ] = useState(false);
-//    const [fullName, setFullName] = useState("");
-//    const [email, setEmail] = useState("");
-//    const [linkedinUrl, setLinkedinUrl] = useState("");
-//    const [github, setGithub] = useState("");
-//    const [professionalSummary, setProfessionalSummary] = useState("");
-//    const [skills, setSkills] = useState("");
-//    const [company, setCompany] = useState("");
-//    const [startDate, setStartDate] = useState("");
-//    const [experience, setExperience] = useState("");
-//    const [endDate, setEndDate] = useState("");
-//    const [position, setPosition] = useState("");
-//    const [setEduStartDate, setEduStartDate] = useState("");
-//    const [setEduEndDate, setEduEndDate] = useState("");
-//    const [education, setEducation] = useState("");
+import Navbar from "../components/common/Navbar";
+import { toast } from "react-toastify";
 
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+
+// REUSABLE INPUT COMPONENT
+const Input = ({ label, ...props }) => {
+  return (
+    <div>
+      <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5 block">
+        {label}
+      </label>
+
+      <input
+        {...props}
+        className="w-full px-3.5 py-2.5 rounded-lg bg-[#F7F9FC] border border-gray-200
+        outline-none focus:border-[#0A66C2] focus:ring-2 focus:ring-[#0A66C2]/10 focus:bg-white transition text-gray-900"
+      />
+    </div>
+  );
+};
+
+// REUSABLE TEXTAREA COMPONENT
+const TextArea = ({ label, ...props }) => {
+  return (
+    <div>
+      <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5 block">
+        {label}
+      </label>
+
+      <textarea
+        {...props}
+        className="w-full px-3.5 py-2.5 rounded-lg bg-[#F7F9FC] border border-gray-200
+        outline-none focus:border-[#0A66C2] focus:ring-2 focus:ring-[#0A66C2]/10 focus:bg-white transition text-gray-900 resize-none"
+      />
+    </div>
+  );
+};
+
+// RESUME BUILDER
+const ResumeBuilder = () => {
+
+  const [resumeId, setResumeId] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState("classic");
+  const [isChangingTemplate, setIsChangingTemplate] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);   
+
+  const [resume, setResume] = useState([]);
+  const [data, setData] = useState({
+
+    resumeTitle: "", 
+    jobRole: "",
+
+    // Personal Information
+    fullName: "",
+    email: "",
+    phone: "",
+    location: "",
+    linkedinUrl: "",
+    github: "",
+
+    // Career Information
+    jobRole: "",
+    experience: "",
+    professionalSummary: "",
+
+    // Skills
+    skills: [
+      {
+         category: "",
+         items: ""
+      }     
+    ],     
+
+    // Work Experience
+    experiences: [
+      {
+        company: "",
+        position: "",
+        startDate: "",
+        endDate: "",
+        desc: "",
+      },
+    ],
+
+    // Education
+    education: [
+      {
+        college: "",
+        degree: "",
+        startDate: "",
+        endDate: "",
+      },
+    ],
+
+    // Projects
+    projects: [
+      {
+        title: "",
+        description: "",
+        techStack: "",
+        startDate: "",
+        endDate: "",
+        link: ""
+      },
+    ],
+
+    // Achievements
+    achievements: "",
+  });
+
+  const navigate = useNavigate();
+                                
+
+const { id } = useParams();
+
+useEffect(() => {
+  if (!id) return;
+
+  const fetchExistingResume = async () => {
+    try {
+      console.log("🔥 URL ID:", id);
+
+      const res = await axios.get(
+        `http://localhost:5000/api/v1/resume/get/${id}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      console.log("🔥 API RESPONSE:", res.data);
+      console.log("🔥 FETCHED RESUME ID:", res.data.resume._id);
+      console.log("🔥 FETCHED RESUME TITLE:", res.data.resume.resumeTitle);
+
+      setResumeId(res.data.resume._id);
+
+      setData({
+        resumeTitle: res.data.resume.resumeTitle || "",
+        jobRole: res.data.resume.jobRole || "",
+
+        fullName: res.data.resume.fullName || "",
+        email: res.data.resume.email || "",
+        phone: res.data.resume.phone || "",
+        location: res.data.resume.location || "",
+        linkedinUrl: res.data.resume.linkedin || "",
+        github: res.data.resume.github || "",
+
+        experience: res.data.resume.experience || "",
+        professionalSummary: res.data.resume.summary || "",
+
+        skills:
+          res.data.resume.skills?.length > 0
+            ? res.data.resume.skills.map((skill) => ({
+                category: skill.category || "",
+                items: Array.isArray(skill.items)
+                  ? skill.items.join(", ")
+                  : skill.items || "",
+              }))
+            : [
+                {
+                  category: "",
+                  items: "",
+                },
+              ],
+
+        experiences:
+          res.data.resume.workExperience?.length > 0
+            ? res.data.resume.workExperience.map((experience) => {
+                const [startDate = "", endDate = ""] =
+                  (experience.duration || "").split(" - ");
+
+                return {
+                  company: experience.company || "",
+                  position: experience.role || "",
+                  startDate,
+                  endDate,
+                  desc: experience.description || "",
+                };
+              })
+            : [
+                {
+                  company: "",
+                  position: "",
+                  startDate: "",
+                  endDate: "",
+                  desc: "",
+                },
+              ],
+
+        education:
+          res.data.resume.education?.length > 0
+            ? res.data.resume.education.map((education) => {
+                const [startDate = "", endDate = ""] =
+                  (education.year || "").split(" - ");
+
+                return {
+                  college: education.college || "",
+                  degree: education.degree || "",
+                  startDate,
+                  endDate,
+                };
+              })
+            : [
+                {
+                  college: "",
+                  degree: "",
+                  startDate: "",
+                  endDate: "",
+                },
+              ],
+
+        projects:
+          res.data.resume.projects?.length > 0
+            ? res.data.resume.projects.map((project) => ({
+                title: project.title || "",
+                description: project.description || "",
+                techStack: Array.isArray(project.techStack)
+                  ? project.techStack.join(", ")
+                  : project.techStack || "",
+                startDate: project.startDate || "",
+                endDate: project.endDate || "",
+                link: project.link || "",
+              }))
+            : [
+                {
+                  title: "",
+                  description: "",
+                  techStack: "",
+                  startDate: "",
+                  endDate: "",
+                  link: "",
+                },
+              ],
+
+        achievements:
+          res.data.resume.achievements?.length > 0
+            ? res.data.resume.achievements
+                .map((achievement) => achievement.description)
+                .join("\n")
+            : "",
+      });
+    } catch (error) {
+      console.error("Error fetching resume:", error);
+    }
+  };
+
+  fetchExistingResume();
+}, [id]);
+   
+   
+const handleUpdate = async () => {
+  if (isSaving) {
+    return;
+  }
+
+  // BASIC VALIDATION
+  if (
+    !data.fullName ||
+    !data.email ||
+    !data.location ||
+    !data.resumeTitle
+  ) {
+    toast.error("Please fill all required fields");
+    return;
+  }
+
+  try {
+    setIsSaving(true);
+
+    // ==============================
+    // FORMAT SKILLS
+    // ==============================
+
+    const skillsArray = data.skills
+      .filter(
+        (skill) =>
+          skill.category.trim() ||
+          skill.items.trim()
+      )
+      .map((skill) => ({
+        category: skill.category.trim(),
+
+        items: skill.items
+          .split(",")
+          .map((item) => item.trim())
+          .filter((item) => item !== ""),
+      }));
+
+    // ==============================
+    // FORMAT WORK EXPERIENCE
+    // ==============================
+
+    const formattedWorkExperience = data.experiences.map(
+      (experience) => ({
+        company: experience.company,
+        role: experience.position,
+
+        duration:
+          experience.startDate && experience.endDate
+            ? `${experience.startDate} - ${experience.endDate}`
+            : experience.startDate ||
+              experience.endDate ||
+              "",
+
+        description: experience.desc,
+      })
+    );
+
+    // ==============================
+    // FORMAT EDUCATION
+    // ==============================
+
+    const formattedEducation = data.education.map(
+      (education) => ({
+        college: education.college,
+        degree: education.degree,
+
+        year:
+          education.startDate && education.endDate
+            ? `${education.startDate} - ${education.endDate}`
+            : education.startDate ||
+              education.endDate ||
+              "",
+      })
+    );
+
+    // ==============================
+    // FORMAT PROJECTS
+    // ==============================
+
+    const formattedProjects = data.projects.map(
+      (project) => ({
+        title: project.title,
+        description: project.description,
+
+        techStack: project.techStack
+          .split(",")
+          .map((tech) => tech.trim())
+          .filter((tech) => tech !== ""),
+
+        startDate: project.startDate,
+        endDate: project.endDate,
+        link: project.link,
+      })
+    );
+
+    // ==============================
+    // FORMAT ACHIEVEMENTS
+    // ==============================
+
+    const formattedAchievements = data.achievements
+      .split("\n")
+      .map((achievement) => achievement.trim())
+      .filter((achievement) => achievement !== "")
+      .map((achievement) => ({
+        description: achievement,
+      }));
+
+    // ==============================
+    // UPDATE RESUME
+    // ==============================
+
+    const res = await axios.put(
+      `http://localhost:5000/api/v1/resume/update/${id}`,
+      {
+        resumeTitle: data.resumeTitle,
+        jobRole: data.jobRole,
+
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        location: data.location,
+
+        linkedin: data.linkedinUrl,
+        github: data.github,
+
+        experience: data.experience,
+        summary: data.professionalSummary,
+
+        skills: skillsArray,
+
+        education: formattedEducation,
+
+        projects: formattedProjects,
+
+        workExperience: formattedWorkExperience,
+
+        achievements: formattedAchievements,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+
+    // ==============================
+    // SUCCESS
+    // ==============================
+
+    if (res.data.success) {
+      setResumeId(res.data.resume._id);
+
+      setSelectedTemplate(
+        res.data.resume.template || "classic"
+      );
+
+      toast.success(
+        "Resume updated successfully 🚀"
+      );
+    }
+
+  } catch (error) {
+    console.error(
+      "Resume update error:",
+      error.response?.data || error
+    );
+
+    toast.error(
+      error.response?.data?.message ||
+      "Failed to update resume"
+    );
+
+  } finally {
+    setIsSaving(false);
+  }
+};
+
+
+
+  // ACCORDION STATE   
+  const [openSections, setOpenSections] = useState([0]);
+
+  // PREVIEW STATE
+  const [previewMode, setPreviewMode] = useState(false);
+
+  // SAVE LOADING STATE
+  const [isSaving, setIsSaving] = useState(false);
+
+  // RESUME DATA
+
+  // TOGGLE ACCORDION
+  const toggleSection = (index) => {
+    if (openSections.includes(index)) {
+      setOpenSections(openSections.filter((item) => item !== index));
+    } else {
+      setOpenSections([...openSections, index]);
+    }
+  };
+
+  // UPDATE SIMPLE DATA
+  const updateData = (field, value) => {
+    setData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };                               
+
+  // UPDATE WORK EXPERIENCE
+  const updateExperience = (index, field, value) => {
+    const updatedExperience = [...data.experiences];
+    updatedExperience[index] = {
+      ...updatedExperience[index],
+      [field]: value,
+    };
+
+    setData((prev) => ({
+      ...prev,
+      experiences: updatedExperience,
+    }));
+  };
+
+  // ADD WORK EXPERIENCE
+  const addExperience = () => {
+    setData((prev) => ({
+      ...prev,
+      experiences: [
+        ...prev.experiences,
+        {
+          company: "",
+          position: "",
+          startDate: "",
+          endDate: "",
+          desc: "",
+        },
+      ],
+    }));
+  };
+
+  // REMOVE WORK EXPERIENCE
+  const removeExperience = (index) => {
+    if (data.experiences.length === 1) {
+      toast.info("At least one work experience field is required");
+      return;
+    }
+
+    setData((prev) => ({
+      ...prev,
+      experiences: prev.experiences.filter((_, i) => i !== index),
+    }));
+  };
+
+  // UPDATE EDUCATION
+  const updateEducation = (index, field, value) => {
+    const updatedEducation = [...data.education];
+    updatedEducation[index] = {
+      ...updatedEducation[index],
+      [field]: value,
+    };
+
+    setData((prev) => ({
+      ...prev,
+      education: updatedEducation,
+    }));
+  };
+
+  // ADD EDUCATION
+  const addEducation = () => {
+    setData((prev) => ({
+      ...prev,
+      education: [
+        ...prev.education,
+        {
+          college: "",
+          degree: "",
+          startDate: "",
+          endDate: "",
+        },
+      ],
+    }));
+  };
+
+  // REMOVE EDUCATION
+  const removeEducation = (index) => {
+    if (data.education.length === 1) {
+      toast.info("At least one education field is required");
+      return;
+    }
+
+    setData((prev) => ({
+      ...prev,
+      education: prev.education.filter((_, i) => i !== index),
+    }));
+  };
+
+  // UPDATE PROJECT
+  const updateProject = (index, field, value) => {
+    const updatedProjects = [...data.projects];
+    updatedProjects[index] = {
+      ...updatedProjects[index],
+      [field]: value,
+    };
+
+    setData((prev) => ({
+      ...prev,
+      projects: updatedProjects,
+    }));
+  };
+
+  const updateSkill = (index, field, value) => {
+    
+      const updatedSkills = [...data.skills];
+
+      updatedSkills[index] = {
+          ...updatedSkills[index],
+          [field]: value
+      };
+
+      setData((prev) => ({
+        ...prev,
+        skills: updatedSkills,
+      }));
+  }
+
+  const addSkills = () => {
+     setData((prev) => ({
+        ...prev,
+        skills: [
+          ...prev.skills,
+          {
+             category: "",
+             items: ""
+          }
+        ]
+     }))
+  }
+
+  const removeSkill = (index) => {
+     if(data.skills.length === 1) {
+       toast.info("At least one skill category is required...");
+       return;
+     }
+
+     setData((prev) => ({
+        ...prev,
+        skills: prev.skills.filter((_, i) => i !== index),
+     }))
+  }   
+ 
+  // ADD PROJECT
+  const addProject = () => {
+    setData((prev) => ({
+      ...prev,
+      projects: [
+        ...prev.projects,
+        {
+          title: "",
+          description: "",
+          techStack: "",
+          startDate: "",
+          endDate: "",
+          link: ""
+        },
+      ],
+    }));
+  };
+
+  // REMOVE PROJECT
+  const removeProject = (index) => {
+    if (data.projects.length === 1) {
+      toast.info("At least one project field is required");
+      return;
+    }
+
+    setData((prev) => ({
+      ...prev,
+      projects: prev.projects.filter((_, i) => i !== index),
+    }));
+  };
+
+  // ACCORDION SECTIONS
+  const sections = [
+    { title: "Personal Information", icon: <BsPerson /> },
+    { title: "Professional Summary", icon: <Sparkles /> },
+    { title: "Work Experience", icon: <BsBriefcase /> },
+    { title: "Education", icon: <BsMortarboard /> },
+    { title: "Skills", icon: <BsCodeSlash /> },
+    { title: "Projects", icon: <BsCodeSlash /> },
+    { title: "Achievements", icon: <BsTrophy /> },
+  ];
+
+  // SAVE RESUME
+  const handleSave = async () => {
+
+    if (isSaving) {
+      return;
+    }
+
+    // BASIC VALIDATION
+    if (!data.fullName || !data.email || !data.location || !data.resumeTitle) {        
+      toast.error("Please fill all required fields");
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+
+      const skillsArray = data.skills
+        .filter((skill) => skill.category.trim() ||  
+        skill.items.trim())
+        .map((skill) => ({
+          category: skill.category.trim(),
+          items: skill.items.split(",")
+          .map((item) => item.trim())
+          .filter((item) => item !== ""),  
+        }));
+
+      // CONVERT FRONTEND EXPERIENCE TO BACKEND WORK EXPERIENCE
+      const formattedWorkExperience = data.experiences.map((experience) => ({
+        company: experience.company,
+        role: experience.position,
+        duration:
+          experience.startDate && experience.endDate
+            ? `${experience.startDate} - ${experience.endDate}`
+            : experience.startDate || experience.endDate || "",
+        description: experience.desc,
+      }));
+
+      // CONVERT FRONTEND EDUCATION
+      const formattedEducation = data.education.map((education) => ({
+        college: education.college,
+        degree: education.degree,
+        year:
+          education.startDate && education.endDate
+            ? `${education.startDate} - ${education.endDate}`
+            : education.startDate || education.endDate || "",
+      }));
+
+      // CONVERT FRONTEND PROJECTS
+      const formattedProjects = data.projects.map((project) => ({
+        title: project.title,
+        description: project.description,
+        techStack: project.techStack
+        .split(",")
+        .map((tech) => tech.trim())
+        .filter((tech) => tech !== ""),
+        startDate: project.startDate,
+        endDate: project.endDate,
+        link: project.link,
+      }));
+
+      // CONVERT ACHIEVEMENTS
+      const formattedAchievements = data.achievements
+        .split("\n")
+        .map((achievement) => achievement.trim())
+        .filter((achievement) => achievement !== "")
+        .map((achievement) => ({ description: achievement }));
+
+      // SEND DATA TO BACKEND
+      const { data: response } = await axios.post(
+        "http://localhost:5000/api/v1/resume/create",
+        {
+          resumeTitle: data.resumeTitle,
+          jobRole: data.jobRole, 
+          fullName: data.fullName,
+          email: data.email,
+          phone: data.phone,
+          location: data.location,
+          linkedin: data.linkedinUrl,
+          github: data.github,
+          jobRole: data.jobRole,
+          experience: data.experience,
+          summary: data.professionalSummary,
+          skills: skillsArray,
+          education: formattedEducation,
+          projects: formattedProjects,
+          workExperience: formattedWorkExperience,
+          achievements: formattedAchievements,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      // SUCCESS
+      if (response.success) {
+        setResumeId(response.resume._id);
+        setSelectedTemplate(response.resume.template || "classic");
+        toast.success("Resume created successfully 🚀");
+      }
+
+    } catch (error) {
+      console.error("Resume creation error:", error);
+      toast.error(error.response?.data?.message || "Failed to create resume");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+// //   // // // PREVIEW PAGE
+// if (previewMode) {    
+//   const templates = [
+//     { id: "classic", name: "Classic", desc: "Formal & ATS Friendly" },
+//     { id: "modern", name: "Modern", desc: "Colorful & 2-Column" },
+//     { id: "minimal", name: "Minimal", desc: "Clean & Spacious" },
+//   ];
 
 //   return (
-//     <>
-     
-//      <div className='min-h-screen px-6 py-10 text-white bg-gradient-to-br from-purple-900 via-black to-indigo-900'>
+//     <div className="bg-gray-50 min-h-screen print:bg-white">
 
-//           <div className=''>
-//          <Navbar />
-//          </div>
+//       {/* STICKY TOP BAR */}
+//       <div className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm print:hidden">
+//         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
 
-//          <section className=''>
+//           {/* TEMPLATE SWITCHER */}
+//           <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
+//             {templates.map((tpl) => (
+//               <button
+//                 key={tpl.id}
+//                 onClick={() => handleTemplateChange(tpl.id)}
+//                 disabled={isChangingTemplate}
+//                 className={`px-4 py-1.5 rounded-md text-sm font-semibold transition-all duration-200 ${
+//                   selectedTemplate === tpl.id
+//                    ? "bg-[#0A66C2] text-white shadow"
+//                     : "bg-transparent text-gray-600 hover:bg-white"
+//                 } ${isChangingTemplate? "opacity-50 cursor-not-allowed" : ""}`}
+//               >
+//                 {tpl.name}
+//               </button>
+//             ))}
+//           </div>
 
-//             <div className=''>
-//               <h1 className=''>
-//                Resume Builder
-//               </h1>
-//             </div>
+//           {/* ACTION BUTTONS */}
+//           <div className="flex items-center gap-3">
+//             <button
+//               onClick={() => setPreviewMode(false)}
+//               className="flex items-center gap-2 px-4 py-2 bg-white border-gray-300 rounded-md text-sm font-medium shadow-sm hover:bg-gray-50 transition"
+//             >
+//               <ArrowLeft size={16} />
+//               Back to Edit
+//             </button>
 
-//             <div className=''>
-//               <span className=''><button>Form</button> <button className=''>Markdown</button></span>
-//             </div>
+//             <button
+//               onClick={handlePDFDownlord}
+//               disabled={isDownloading}
+//               className="flex items-center gap-2 px-4 py-2 bg-[#0A66C2] text-white rounded-md text-sm font-semibold shadow-sm hover:bg-[#004182] transition"
+//             >
+//               <Download size={16} />
+//               {isDownloading ? "Generating PDF..." : "Download PDF"}
+//             </button>
+//           </div>
+//         </div>
+//       </div>
 
-//             <div className=''>
-//               <div className=''>
-//                <button className=''><IoSaveSharp />Save</button>
-//                <span className=''><FaFileDownload /><button className=''>Download PDF</button></span>
-//               </div>
-//             </div>
+//       {/* TEMPLATE INFO BAR */}
+//       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 print:hidden">
+//         <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+//           <Sparkles size={16} className="text-[#0A66C2]" />
+//           <span>
+//             Previewing: <span className="font-semibold capitalize text-gray-900">{selectedTemplate}</span> Template -
+//             {templates.find(t => t.id === selectedTemplate)?.desc}
+//           </span>
+//         </div>
+//       </div>
 
-//             <div className=''>
-               
-//                <div className=''>
-//                  <h3 className='' >Full Name</h3>
-//                  <input type='text' onChange={(e) => setFullName(e.target.value)} value={fullName} placeholder='adarsh patidar' />
-//                </div>
-               
-//                <div className=''>
-//                  <h3 className='' >Email</h3>
-//                  <input type='email' onChange={(e) => setEmail(e.target.value)} value={email} placeholder='my@gmail.com' />
-//                </div>
+//       {/* RESUME CANVAS - A4 CENTERED */}
+//       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pb-10 flex justify-center print:p-0">
+//         <div className="transition-opacity duration-200" style={{ opacity: isChangingTemplate? 0.5 : 1 }}>
+//           {selectedTemplate === "classic" && <ClassicTemplate data={data} />}
+//           {selectedTemplate === "modern" && <ModernTemplate data={data} />}
+//           {selectedTemplate === "minimal" && <MinimalTemplate data={data} />}
+//         </div>
+//       </div>
+//     </div>
+//   );
+ 
 
-//                <div className=''>
-//                  <h3 className='' >LinkedIn URL</h3>
-//                  <input type='url' onChange={(e) => setLinkedinUrl(e.target.value)} value={linkedinUrl} placeholder='http://linkedin.com/in/adarsh patidar' />
-//                </div>
-
-//                <div className=''>
-//                  <h3 className='' >Github URL</h3>
-//                  <input type='url' placeholder='http://github.com/in/adarsh patidar9' />
-//                </div>
-
-//             </div>
-
-
-//              <div className=''>
-               
-//                 <div className=''>
-//                  <h3 className='' >Professional Summary</h3>
-//                  <textarea type='text' rows={4} cols={10} placeholder='write you professional summary...' />
-//                </div>
-
-//             </div>
-
-
-//                <div className=''>
-               
-//                <div className=''>
-//                  <h3 className='' >Skills</h3>
-//                  <textarea type='text' rows={2} cols={8} placeholder=' write your skills...' />
-//                </div>
-
-//             </div>
-
-    
-//              {/* work expience */}
-       
-//             <div className=''>
-//                <h3 className='' >Work Experience</h3>  
-               
-//                <div className=''>
-                  
-//                   <h2 className=''>
-//                      Add Experience
-//                   </h2>
-
-//                   <input type='text' placeholder='Position/Title' value={position} onChange={(e) => setPosition(e.target.value)} />
-
-//                   <input type='text' placeholder='Company/Organization' value={company} onChange={(e) => setCompany(e.target.value)} />
-
-//                   <input type='date' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-
-//                   <input type='date' value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-
-//                   <h3 className=''>Current Experience</h3>
-//                   <textarea type='text' value={experience}
-//                   onChange={(e) => setExperience(e.target.value)}
-//                   placeholder='Description of your Professional Experience' />
-
-//                   <div className=''>
-//                      <button className=''>Improve with Ai</button>
-//                   </div>
-
-//                   <div className=''>
-//                      <button className=''>
-//                        Cancel
-//                      </button>
-//                      <button className=''>
-//                        Add
-//                      </button>
-//                   </div>
-
-//                </div>
-
-
-                        
-//             </div>          
-  
-
-//             {/* education */}
-
-//              <div className=''>
-//                <h3 className='' >Education</h3>  
-               
-//                <div className=''>
-                  
-//                   <h2 className=''>
-//                      Add Education
-//                   </h2>
-
-//                   <input type='text' placeholder='Position/Title' value={position} onChange={(e) => setPosition(e.target.value)} />
-
-//                   <input type='text' placeholder='Company/Organization' value={company} onChange={(e) => setCompany(e.target.value)} />
-
-//                   <input type='date' value={startDate} onChange={(e) => setEduStartDate(e.target.value)} />
-
-//                   <input type='date' value={endDate} onChange={(e) => setEduEndDate(e.target.value)} />
-
-//                   <h3 className=''>Current Education</h3>
-//                   <textarea type='text' value={education}
-//                   onChange={(e) => setEducation(e.target.value)}
-//                   placeholder='Description of your  Education' />                 
-
-//                   <div className=''>
-//                      <button className=''>Improve with Ai</button>
-//                   </div>
-
-//                   <div className=''>
-//                      <button className=''>
-//                        Cancel
-//                      </button>
-//                      <button className=''>
-//                        Add
-//                      </button>
-//                   </div>
-
-//                </div>
-
-
-                        
-//             </div>  
-
-
-
-//               <div className=''>
-//                <h3 className='' >Projects</h3>  
-               
-//                <div className=''>
-                  
-//                   <h2 className=''>
-//                      Add Projects
-//                   </h2>
-
-//                   <input type='text' placeholder='Position/Title' value={position} onChange={(e) => setPosition(e.target.value)} />
-
-//                   <input type='text' placeholder='Company/Organization' value={company} onChange={(e) => setCompany(e.target.value)} />
-
-//                   <input type='date' value={startDate} onChange={(e) => setEduStartDate(e.target.value)} />
-
-//                   <input type='date' value={endDate} onChange={(e) => setEduEndDate(e.target.value)} />
-
-//                   <h3 className=''>Current Education</h3>
-//                   <textarea type='text' value={education}
-//                   onChange={(e) => setEducation(e.target.value)}
-//                   placeholder='Description of your  Education' />                 
-
-//                   <div className=''>
-//                      <button className=''>Improve with Ai</button>
-//                   </div>
-
-//                   <div className=''>
-//                      <button className=''>
-//                        Cancel
-//                      </button>
-//                      <button className=''>
-//                        Add
-//                      </button>
-//                   </div>
-
-//                </div>
-
-
-                        
-//             </div>  
-           
-
-//          </section>
-
-//      </div>
-
-   
-    
-//     </>
-//   )
 // }
 
-// export default ResumeBuilder
-
-
-
-
-
-
-
-
-// import React, { useState } from "react";
-// import Navbar from "../components/common/Navbar";
-// import { IoSaveSharp } from "react-icons/io5";
-// import { FaFileDownload } from "react-icons/fa";
-
-// const ResumeBuilder = () => {
-//   const [fullName, setFullName] = useState("");
-//   const [email, setEmail] = useState("");
-//   const [linkedinUrl, setLinkedinUrl] = useState("");
-//   const [github, setGithub] = useState("");
-//   const [professionalSummary, setProfessionalSummary] = useState("");
-//   const [skills, setSkills] = useState("");
-
-//   const [company, setCompany] = useState("");
-//   const [startDate, setStartDate] = useState("");
-//   const [experience, setExperience] = useState("");
-//   const [endDate, setEndDate] = useState("");
-//   const [position, setPosition] = useState("");
-
-//   const [eduStartDate, setEduStartDate] = useState("");
-//   const [eduEndDate, setEduEndDate] = useState("");
-//   const [education, setEducation] = useState("");
-
-//   const [projects, setProjects] = useState("");
-//   const [projectExperience, seProjectExperience] = useState("");
-
-//   const [achievements, setAchievements] = useState("");
-
-//   const [openAddExp, setOpenAddExp] = useState(false);
-  
-//   const [formOpen, setFormOpen] = useState(true);
-//   const [previewOpen, setPreviewOpen] = useState(false);
-
-  
-
-//   return (
-//     <>
-//       <Navbar />
-
-//       <div className="min-h-screen px-6 py-24 text-white bg-gradient-to-br from-purple-900 via-black to-indigo-900">
-
-//         {/* HEADER */}
-//         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
-
-//           <div>
-//             <h1 className="text-4xl font-bold">
-//               Resume{" "}
-//               <span className="text-indigo-300">
-//                 Builder
-//               </span>
-//             </h1>
-
-//             <p className="text-gray-400 mt-2 text-sm">
-//               Build ATS friendly resumes with AI assistance
-//             </p>
-//           </div>
-
-//           {/* BUTTONS */}
-//           <div className="flex items-center gap-3">
-
-//               <div className="">
-//                <span className="">
-//                   <button onClick={setFormOpen(!formOpen)} className="">Form</button>
-//                   <button className="ml-5" onClick={setPreviewOpen(!previewOpen)} >Preview</button></span>
-//             </div>
-
-//             <button
-//               className="flex items-center gap-2 px-4 py-2 rounded-xl
-//               bg-white/10 border border-white/10 hover:bg-white/20 transition"
-//             >
-//               <IoSaveSharp />
-//               Save
-//             </button>
-
-//             <button
-//               className="flex items-center gap-2 px-4 py-2 rounded-xl
-//               bg-indigo-500 hover:bg-indigo-600 transition"
-//             >
-//               <FaFileDownload />
-//               Download PDF
-//             </button>
-
-          
-
-//           </div>
-
-//         </div>
-
-//         {/* MAIN GRID */}
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-//           {/* LEFT SIDE FORM */}
-         
-//            { formOpen ? (
-//             <>
-             
-//                <div className="space-y-6">
-
-//             {/* PERSONAL INFO */}
-//             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-
-//               <h2 className="text-xl font-semibold mb-5">
-//                 Personal Information
-//               </h2>
-
-//               <div className="space-y-4">
-
-//                 <div>
-//                   <label className="text-sm text-gray-300">
-//                     Full Name
-//                   </label>
-
-//                   <input
-//                     type="text"
-//                     value={fullName}
-//                     onChange={(e) => setFullName(e.target.value)}
-//                     placeholder="Adarsh Patidar"
-//                     className="w-full mt-2 px-4 py-3 rounded-xl
-//                     bg-white/5 border border-white/10 outline-none
-//                     focus:border-indigo-400"
-//                   />
-//                 </div>
-
-//                 <div>
-//                   <label className="text-sm text-gray-300">
-//                     Email
-//                   </label>
-
-//                   <input
-//                     type="email"
-//                     value={email}
-//                     onChange={(e) => setEmail(e.target.value)}
-//                     placeholder="my@gmail.com"
-//                     className="w-full mt-2 px-4 py-3 rounded-xl
-//                     bg-white/5 border border-white/10 outline-none
-//                     focus:border-indigo-400"
-//                   />
-//                 </div>
-
-//                 <div>
-//                   <label className="text-sm text-gray-300">
-//                     LinkedIn URL
-//                   </label>
-
-//                   <input
-//                     type="url"
-//                     value={linkedinUrl}
-//                     onChange={(e) => setLinkedinUrl(e.target.value)}
-//                     placeholder="linkedin.com/in/adarsh"
-//                     className="w-full mt-2 px-4 py-3 rounded-xl
-//                     bg-white/5 border border-white/10 outline-none
-//                     focus:border-indigo-400"
-//                   />
-//                 </div>
-
-//                 <div>
-//                   <label className="text-sm text-gray-300">
-//                     GitHub URL
-//                   </label>
-
-//                   <input
-//                     type="url"
-//                     value={github}
-//                     onChange={(e) => setGithub(e.target.value)}
-//                     placeholder="github.com/adarsh"
-//                     className="w-full mt-2 px-4 py-3 rounded-xl
-//                     bg-white/5 border border-white/10 outline-none
-//                     focus:border-indigo-400"
-//                   />
-//                 </div>
-
-//               </div>
-//             </div>
-
-//             {/* SUMMARY */}
-//             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-
-//               <h2 className="text-xl font-semibold mb-5">
-//                 Professional Summary
-//               </h2>
-
-              
-
-//               <textarea
-//                 rows={5}
-//                 value={professionalSummary}
-//                 onChange={(e) =>
-//                   setProfessionalSummary(e.target.value)
-//                 }
-//                 placeholder="Write your professional summary..."
-//                 className="w-full px-4 py-3 rounded-xl
-//                 bg-white/5 border border-white/10 outline-none
-//                 focus:border-indigo-400 resize-none"
-//               />
-//                 <button
-//                   className="px-4 py-2 rounded-lg
-//                   bg-indigo-500 hover:bg-indigo-600 transition text-sm"
-//                 >
-//                   Improve with AI
-//                 </button>
-
-//             </div>
-
-//             {/* SKILLS */}
-//             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-
-//               <h2 className="text-xl font-semibold mb-5">
-//                 Skills
-//               </h2>
-
-//               <textarea
-//                 rows={3}
-//                 value={skills}
-//                 onChange={(e) => setSkills(e.target.value)}
-//                 placeholder="React, Node.js, MongoDB, AWS..."
-//                 className="w-full px-4 py-3 rounded-xl
-//                 bg-white/5 border border-white/10 outline-none
-//                 focus:border-indigo-400 resize-none"
-//               />
-
-//             </div>
-
-//             {/* EXPERIENCE */}
-//             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-
-//               <div className="flex items-center justify-between mb-5">
-//                 <h2 className="text-xl font-semibold">
-//                   Work Experience
-//                 </h2>
-
-         
-//               </div>
-
-//               <div className="space-y-4">
-
-//                 <input
-//                   type="text"
-//                   placeholder="Position / Title"
-//                   value={position}
-//                   onChange={(e) => setPosition(e.target.value)}
-//                   className="w-full px-4 py-3 rounded-xl
-//                   bg-white/5 border border-white/10 outline-none
-//                   focus:border-indigo-400"
-//                 />
-
-//                 <input
-//                   type="text"
-//                   placeholder="Company / Organization"
-//                   value={company}
-//                   onChange={(e) => setCompany(e.target.value)}
-//                   className="w-full px-4 py-3 rounded-xl
-//                   bg-white/5 border border-white/10 outline-none
-//                   focus:border-indigo-400"
-//                 />
-
-//                 <div className="grid grid-cols-2 gap-4">
-
-//                   <input
-//                     type="date"
-//                     value={startDate}
-//                     onChange={(e) => setStartDate(e.target.value)}
-//                     className="px-4 py-3 rounded-xl
-//                     bg-white/5 border border-white/10 outline-none
-//                     focus:border-indigo-400"
-//                   />
-
-//                   <input
-//                     type="date"
-//                     value={endDate}
-//                     onChange={(e) => setEndDate(e.target.value)}
-//                     className="px-4 py-3 rounded-xl
-//                     bg-white/5 border border-white/10 outline-none
-//                     focus:border-indigo-400"
-//                   />
-
-//                 </div>
-
-//                 <textarea
-//                   rows={4}
-//                   value={experience}
-//                   onChange={(e) => setExperience(e.target.value)}
-//                   placeholder="Describe your professional experience..."
-//                   className="w-full px-4 py-3 rounded-xl
-//                   bg-white/5 border border-white/10 outline-none
-//                   focus:border-indigo-400 resize-none"
-//                 />
-
-//                   <button
-//                   className="px-4 py-2 rounded-lg
-//                   bg-indigo-500 hover:bg-indigo-600 transition text-sm"
-//                 >
-//                   Improve with AI
-//                 </button>
-
-//               </div>
-//             </div>
-
-//             {/* EDUCATION */}
-//             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-
-//               <h2 className="text-xl font-semibold mb-5">
-//                 Education
-//               </h2>
-
-
-//               <div className="space-y-4">
-
-//                 <input
-//                   type="text"
-//                   placeholder="College / University"
-//                   className="w-full px-4 py-3 rounded-xl
-//                   bg-white/5 border border-white/10 outline-none
-//                   focus:border-indigo-400"
-//                 />
-
-//                 <div className="grid grid-cols-2 gap-4">
-
-//                   <input
-//                     type="date"
-//                     value={eduStartDate}
-//                     onChange={(e) => setEduStartDate(e.target.value)}
-//                     className="px-4 py-3 rounded-xl
-//                     bg-white/5 border border-white/10 outline-none
-//                     focus:border-indigo-400"
-//                   />
-
-//                   <input
-//                     type="date"
-//                     value={eduEndDate}
-//                     onChange={(e) => setEduEndDate(e.target.value)}
-//                     className="px-4 py-3 rounded-xl
-//                     bg-white/5 border border-white/10 outline-none
-//                     focus:border-indigo-400"
-//                   />
-
-//                 </div>
-
-//                 <textarea
-//                   rows={4}
-//                   value={education}
-//                   onChange={(e) => setEducation(e.target.value)}
-//                   placeholder="Describe your education..."
-//                   className="w-full px-4 py-3 rounded-xl
-//                   bg-white/5 border border-white/10 outline-none
-//                   focus:border-indigo-400 resize-none"
-//                 />
-
-//               </div>
-//             </div>
-
-//             {/* PROJECTS */}
-//              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-
-//               <div className="flex items-center justify-between mb-5">
-//                 <h2 className="text-xl font-semibold">
-//                    Projects
-//                 </h2>
-
-                
-//               </div>
-
-//               <div className="space-y-4">
-
-//                 <input
-//                   type="text"
-//                   placeholder="Name / Title"
-//                   value={projects}
-//                   onChange={(e) => setProjects(e.target.value)}
-//                   className="w-full px-4 py-3 rounded-xl
-//                   bg-white/5 border border-white/10 outline-none
-//                   focus:border-indigo-400"
-//                 />
-
-//                 {/* <input
-//                   type="text"
-//                   placeholder="Company / Organization"
-//                   value={company}
-//                   onChange={(e) => setCompany(e.target.value)}
-//                   className="w-full px-4 py-3 rounded-xl
-//                   bg-white/5 border border-white/10 outline-none
-//                   focus:border-indigo-400"
-//                 /> */}
-
-//                 <div className="grid grid-cols-2 gap-4">
-
-//                   <input
-//                     type="date"
-//                     value={startDate}
-//                     onChange={(e) => setStartDate(e.target.value)}
-//                     className="px-4 py-3 rounded-xl
-//                     bg-white/5 border border-white/10 outline-none
-//                     focus:border-indigo-400"
-//                   />
-
-//                   <input
-//                     type="date"
-//                     value={endDate}
-//                     onChange={(e) => setEndDate(e.target.value)}
-//                     className="px-4 py-3 rounded-xl
-//                     bg-white/5 border border-white/10 outline-none
-//                     focus:border-indigo-400"
-//                   />
-
-//                 </div>
-
-//                 <textarea
-//                   rows={4}
-//                   value={projectExperience}
-//                   onChange={(e) => setProjectExperience(e.target.value)}
-//                   placeholder="Describe your project experience..."
-//                   className="w-full px-4 py-3 rounded-xl
-//                   bg-white/5 border border-white/10 outline-none
-//                   focus:border-indigo-400 resize-none"
-//                 />
-
-//                 <button
-//                   className="px-4 py-2 rounded-lg
-//                   bg-indigo-500 hover:bg-indigo-600 transition text-sm"
-//                 >
-//                   Improve with AI
-//                 </button>
-
-//               </div>
-//             </div>
-
-//               {/* ACHIEVEMENTS */}
-//             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-
-//               <h2 className="text-xl font-semibold mb-5">
-//                 Achievements
-//               </h2>
-
-//               <textarea
-//                 rows={6}
-//                 value={achievements}
-//                 onChange={(e) => setAchievements(e.target.value)}
-//                 placeholder="React, Node.js, MongoDB, AWS..."
-//                 className="w-full px-4 py-3 rounded-xl
-//                 bg-white/5 border border-white/10 outline-none
-//                 focus:border-indigo-400 resize-none"
-//               />
-
-//                <button
-//                   className="px-4 py-2 rounded-lg
-//                   bg-indigo-500 hover:bg-indigo-600 transition text-sm"
-//                 >
-//                   Improve with AI
-//                 </button>
-
-//             </div>
-
-//           </div>
-
-//             </>
-//            ) 
-                    
-//            }
-         
-
-
-
-          
-
-//           {/* RIGHT SIDE PREVIEW */}
-
-//           { previewOpen ? (
-//             <>
-            
-//                         <div className="sticky top-24 h-fit">
-
-//             <div className="bg-white text-black rounded-2xl p-8 shadow-2xl">
-
-//               <h1 className="text-3xl font-bold">
-//                 {fullName || "Your Name"}
-//               </h1>
-
-//               <p className="text-gray-600 mt-1">
-//                 {email || "your@email.com"}
-//               </p>
-
-//               <div className="mt-6">
-
-//                 <h2 className="text-lg font-semibold border-b pb-2">
-//                   Professional Summary
-//                 </h2>
-
-//                 <p className="text-sm mt-3 text-gray-700">
-//                   {professionalSummary ||
-//                     "Your professional summary will appear here..."}
-//                 </p>
-
-//               </div>
-
-//               <div className="mt-6">
-
-//                 <h2 className="text-lg font-semibold border-b pb-2">
-//                   Skills
-//                 </h2>
-
-//                 <p className="text-sm mt-3 text-gray-700">
-//                   {skills || "Your skills will appear here..."}
-//                 </p>
-
-//               </div>
-
-//               <div className="mt-6">
-
-//                 <h2 className="text-lg font-semibold border-b pb-2">
-//                   Experience
-//                 </h2>
-
-//                 <div className="mt-3">
-//                   <h3 className="font-semibold">
-//                     {position || "Position"}
-//                   </h3>
-
-//                   <p className="text-sm text-gray-600">
-//                     {company || "Company"}
-//                   </p>
-
-//                   <p className="text-sm mt-2 text-gray-700">
-//                     {experience ||
-//                       "Your experience details will appear here..."}
-//                   </p>
-//                 </div>
-
-//               </div>
-
-//             </div>
-
-//           </div>
-            
-//             </>
-//           )}
-
-
-//         </div>
-
-//       </div>
-//     </>
-//   );
-// };
-
-// export default ResumeBuilder;
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState } from "react";
-// import Navbar from "../components/common/Navbar";
-// import { IoSaveSharp } from "react-icons/io5";
-// import { FaFileDownload, FaEye } from "react-icons/fa";
-
-// const ResumeBuilder = () => {
-
-//   const [showPreview, setShowPreview] = useState(false);
-
-//   // PERSONAL INFO
-//   const [fullName, setFullName] = useState("");
-//   const [email, setEmail] = useState("");
-//   const [linkedinUrl, setLinkedinUrl] = useState("");
-//   const [github, setGithub] = useState("");
-
-//   // SUMMARY
-//   const [professionalSummary, setProfessionalSummary] = useState("");
-
-//   // SKILLS
-//   const [skills, setSkills] = useState("");
-
-//   // EXPERIENCE
-//   const [company, setCompany] = useState("");
-//   const [startDate, setStartDate] = useState("");
-//   const [endDate, setEndDate] = useState("");
-//   const [position, setPosition] = useState("");
-//   const [experience, setExperience] = useState("");
-
-//   // EDUCATION
-//   const [education, setEducation] = useState("");
-//   const [eduStartDate, setEduStartDate] = useState("");
-//   const [eduEndDate, setEduEndDate] = useState("");
-
-//   // PROJECTS
-//   const [projects, setProjects] = useState("");
-//   const [projectExperience, setProjectExperience] = useState("");
-
-//   // ACHIEVEMENTS
-//   const [achievements, setAchievements] = useState("");
-
-//   return (
-//     <>
-//       <Navbar />
-
-//       <div className="min-h-screen px-6 py-24 text-white bg-gradient-to-br from-[#12081f] via-[#050816] to-[#0f172a]">
-
-//         {/* HEADER */}
-//         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-10">
-
-//           <div>
-//             <h1 className="text-4xl font-bold tracking-tight">
-//               Resume{" "}
-//               <span className="text-indigo-400">
-//                 Builder
-//               </span>
-//             </h1>
-
-//             <p className="text-gray-400 mt-2">
-//               Build modern ATS-friendly resumes with AI
-//             </p>
-//           </div>
-
-//           {/* BUTTONS */}
-//           <div className="flex items-center gap-3 flex-wrap">
-
-//             <button
-//               className="flex items-center gap-2 px-5 py-3 rounded-2xl
-//               bg-white/5 border border-white/10
-//               hover:bg-white/10 transition-all duration-300"
-//             >
-//               <IoSaveSharp />
-//               Save
-//             </button>
-
-//             <button
-//               className="flex items-center gap-2 px-5 py-3 rounded-2xl
-//               bg-indigo-500 hover:bg-indigo-600
-//               transition-all duration-300"
-//             >
-//               <FaFileDownload />
-//               Download PDF
-//             </button>
-
-//             <button
-//               onClick={() => setShowPreview(true)}
-//               className="flex items-center gap-2 px-5 py-3 rounded-2xl
-//               bg-emerald-500 hover:bg-emerald-600
-//               transition-all duration-300 shadow-lg shadow-emerald-500/20"
-//             >
-//               <FaEye />
-//               Preview Resume
-//             </button>
-
-//           </div>
-
-//         </div>
-
-//         {/* FORM */}
-//         <div className="max-w-5xl mx-auto space-y-6">
-
-//           {/* PERSONAL INFO */}
-//           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
-
-//             <h2 className="text-2xl font-semibold mb-6">
-//               Personal Information
-//             </h2>
-
-//             <div className="grid md:grid-cols-2 gap-5">
-
-//               <input
-//                 type="text"
-//                 placeholder="Full Name"
-//                 value={fullName}
-//                 onChange={(e) => setFullName(e.target.value)}
-//                 className="w-full px-4 py-3 rounded-2xl
-//                 bg-white/5 border border-white/10
-//                 outline-none focus:border-indigo-400"
-//               />
-
-//               <input
-//                 type="email"
-//                 placeholder="Email Address"
-//                 value={email}
-//                 onChange={(e) => setEmail(e.target.value)}
-//                 className="w-full px-4 py-3 rounded-2xl
-//                 bg-white/5 border border-white/10
-//                 outline-none focus:border-indigo-400"
-//               />
-
-//               <input
-//                 type="url"
-//                 placeholder="LinkedIn URL"
-//                 value={linkedinUrl}
-//                 onChange={(e) => setLinkedinUrl(e.target.value)}
-//                 className="w-full px-4 py-3 rounded-2xl
-//                 bg-white/5 border border-white/10
-//                 outline-none focus:border-indigo-400"
-//               />
-
-//               <input
-//                 type="url"
-//                 placeholder="GitHub URL"
-//                 value={github}
-//                 onChange={(e) => setGithub(e.target.value)}
-//                 className="w-full px-4 py-3 rounded-2xl
-//                 bg-white/5 border border-white/10
-//                 outline-none focus:border-indigo-400"
-//               />
-
-//             </div>
-
-//           </div>
-
-//           {/* SUMMARY */}
-//           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
-
-//             <div className="flex items-center justify-between mb-5">
-
-//               <h2 className="text-2xl font-semibold">
-//                 Professional Summary
-//               </h2>
-
-//               <button
-//                 className="px-4 py-2 rounded-xl
-//                 bg-indigo-500 hover:bg-indigo-600
-//                 text-sm transition"
-//               >
-//                 Improve with AI
-//               </button>
-
-//             </div>
-
-//             <textarea
-//               rows={5}
-//               value={professionalSummary}
-//               onChange={(e) => setProfessionalSummary(e.target.value)}
-//               placeholder="Write your professional summary..."
-//               className="w-full px-4 py-4 rounded-2xl
-//               bg-white/5 border border-white/10
-//               outline-none resize-none focus:border-indigo-400"
-//             />
-
-//           </div>
-
-//           {/* SKILLS */}
-//           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
-
-//             <h2 className="text-2xl font-semibold mb-5">
-//               Skills
-//             </h2>
-
-//             <textarea
-//               rows={3}
-//               value={skills}
-//               onChange={(e) => setSkills(e.target.value)}
-//               placeholder="React, Node.js, MongoDB, AWS..."
-//               className="w-full px-4 py-4 rounded-2xl
-//               bg-white/5 border border-white/10
-//               outline-none resize-none focus:border-indigo-400"
-//             />
-
-//           </div>
-
-//           {/* EXPERIENCE */}
-//           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
-
-//             <div className="flex items-center justify-between mb-5">
-
-//               <h2 className="text-2xl font-semibold">
-//                 Work Experience
-//               </h2>
-
-//               <button
-//                 className="px-4 py-2 rounded-xl
-//                 bg-indigo-500 hover:bg-indigo-600
-//                 text-sm transition"
-//               >
-//                 Improve with AI
-//               </button>
-
-//             </div>
-
-//             <div className="space-y-5">
-
-//               <input
-//                 type="text"
-//                 placeholder="Position / Title"
-//                 value={position}
-//                 onChange={(e) => setPosition(e.target.value)}
-//                 className="w-full px-4 py-3 rounded-2xl
-//                 bg-white/5 border border-white/10
-//                 outline-none focus:border-indigo-400"
-//               />
-
-//               <input
-//                 type="text"
-//                 placeholder="Company Name"
-//                 value={company}
-//                 onChange={(e) => setCompany(e.target.value)}
-//                 className="w-full px-4 py-3 rounded-2xl
-//                 bg-white/5 border border-white/10
-//                 outline-none focus:border-indigo-400"
-//               />
-
-//               <div className="grid md:grid-cols-2 gap-4">
-
-//                 <input
-//                   type="date"
-//                   value={startDate}
-//                   onChange={(e) => setStartDate(e.target.value)}
-//                   className="px-4 py-3 rounded-2xl
-//                   bg-white/5 border border-white/10
-//                   outline-none focus:border-indigo-400"
-//                 />
-
-//                 <input
-//                   type="date"
-//                   value={endDate}
-//                   onChange={(e) => setEndDate(e.target.value)}
-//                   className="px-4 py-3 rounded-2xl
-//                   bg-white/5 border border-white/10
-//                   outline-none focus:border-indigo-400"
-//                 />
-
-//               </div>
-
-//               <textarea
-//                 rows={4}
-//                 value={experience}
-//                 onChange={(e) => setExperience(e.target.value)}
-//                 placeholder="Describe your work experience..."
-//                 className="w-full px-4 py-4 rounded-2xl
-//                 bg-white/5 border border-white/10
-//                 outline-none resize-none focus:border-indigo-400"
-//               />
-
-//             </div>
-
-//           </div>
-
-//           {/* EDUCATION */}
-//           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
-
-//             <h2 className="text-2xl font-semibold mb-5">
-//               Education
-//             </h2>
-
-//             <div className="space-y-5">
-
-//               <textarea
-//                 rows={4}
-//                 value={education}
-//                 onChange={(e) => setEducation(e.target.value)}
-//                 placeholder="Describe your education..."
-//                 className="w-full px-4 py-4 rounded-2xl
-//                 bg-white/5 border border-white/10
-//                 outline-none resize-none focus:border-indigo-400"
-//               />
-
-//               <div className="grid md:grid-cols-2 gap-4">
-
-//                 <input
-//                   type="date"
-//                   value={eduStartDate}
-//                   onChange={(e) => setEduStartDate(e.target.value)}
-//                   className="px-4 py-3 rounded-2xl
-//                   bg-white/5 border border-white/10
-//                   outline-none focus:border-indigo-400"
-//                 />
-
-//                 <input
-//                   type="date"
-//                   value={eduEndDate}
-//                   onChange={(e) => setEduEndDate(e.target.value)}
-//                   className="px-4 py-3 rounded-2xl
-//                   bg-white/5 border border-white/10
-//                   outline-none focus:border-indigo-400"
-//                 />
-
-//               </div>
-
-//             </div>
-
-//           </div>
-
-//           {/* PROJECTS */}
-//           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
-
-//             <h2 className="text-2xl font-semibold mb-5">
-//               Projects
-//             </h2>
-
-//             <div className="space-y-5">
-
-//               <input
-//                 type="text"
-//                 placeholder="Project Name"
-//                 value={projects}
-//                 onChange={(e) => setProjects(e.target.value)}
-//                 className="w-full px-4 py-3 rounded-2xl
-//                 bg-white/5 border border-white/10
-//                 outline-none focus:border-indigo-400"
-//               />
-
-//               <textarea
-//                 rows={4}
-//                 value={projectExperience}
-//                 onChange={(e) => setProjectExperience(e.target.value)}
-//                 placeholder="Describe your project..."
-//                 className="w-full px-4 py-4 rounded-2xl
-//                 bg-white/5 border border-white/10
-//                 outline-none resize-none focus:border-indigo-400"
-//               />
-
-//             </div>
-
-//           </div>
-
-//           {/* ACHIEVEMENTS */}
-//           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
-
-//             <h2 className="text-2xl font-semibold mb-5">
-//               Achievements
-//             </h2>
-
-//             <textarea
-//               rows={5}
-//               value={achievements}
-//               onChange={(e) => setAchievements(e.target.value)}
-//               placeholder="Write your achievements..."
-//               className="w-full px-4 py-4 rounded-2xl
-//               bg-white/5 border border-white/10
-//               outline-none resize-none focus:border-indigo-400"
-//             />
-
-//           </div>
-
-//         </div>
-
-//       </div>
-
-//       {/* PREVIEW MODAL */}
-//       {showPreview && (
-
-//         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex justify-end">
-
-//           {/* CLOSE BACKDROP */}
-//           <div
-//             className="flex-1"
-//             onClick={() => setShowPreview(false)}
-//           ></div>
-
-//           {/* PREVIEW PANEL */}
-//           <div
-//             className="w-full md:w-[720px] h-screen overflow-y-auto
-//             bg-white text-black shadow-2xl"
-//           >
-
-//             {/* TOP */}
-//             <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between z-20">
-
-//               <h2 className="text-2xl font-bold">
-//                 Resume Preview
-//               </h2>
-
-//               <button
-//                 onClick={() => setShowPreview(false)}
-//                 className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition"
-//               >
-//                 Close
-//               </button>
-
-//             </div>
-
-//             {/* CONTENT */}
-//             <div className="p-10">
-
-//               {/* HEADER */}
-//               <div className="border-b pb-6">
-
-//                 <h1 className="text-4xl font-bold">
-//                   {fullName || "Your Name"}
-//                 </h1>
-
-//                 <p className="text-gray-600 mt-2">
-//                   {email || "your@email.com"}
-//                 </p>
-
-//                 <div className="flex flex-wrap gap-4 mt-3 text-indigo-600 text-sm">
-//                   <span>{linkedinUrl || "linkedin.com/in/username"}</span>
-//                   <span>{github || "github.com/username"}</span>
-//                 </div>
-
-//               </div>
-
-//               {/* SUMMARY */}
-//               <div className="mt-8">
-
-//                 <h2 className="text-xl font-bold border-b pb-2">
-//                   Professional Summary
-//                 </h2>
-
-//                 <p className="mt-4 text-gray-700 leading-7">
-//                   {professionalSummary || "Your summary will appear here..."}
-//                 </p>
-
-//               </div>
-
-//               {/* SKILLS */}
-//               <div className="mt-8">
-
-//                 <h2 className="text-xl font-bold border-b pb-2">
-//                   Skills
-//                 </h2>
-
-//                 <div className="flex flex-wrap gap-3 mt-4">
-
-//                   {(skills
-//                     ? skills.split(",")
-//                     : ["React", "Node.js", "MongoDB"]
-//                   ).map((skill, i) => (
-
-//                     <span
-//                       key={i}
-//                       className="px-4 py-2 rounded-full
-//                       bg-indigo-100 text-indigo-700 text-sm"
-//                     >
-//                       {skill.trim()}
-//                     </span>
-
-//                   ))}
-
-//                 </div>
-
-//               </div>
-
-//               {/* EXPERIENCE */}
-//               <div className="mt-8">
-
-//                 <h2 className="text-xl font-bold border-b pb-2">
-//                   Experience
-//                 </h2>
-
-//                 <div className="mt-4">
-
-//                   <h3 className="text-lg font-semibold">
-//                     {position || "Frontend Developer"}
-//                   </h3>
-
-//                   <p className="text-indigo-600">
-//                     {company || "Company Name"}
-//                   </p>
-
-//                   <p className="text-sm text-gray-500 mt-1">
-//                     {startDate || "2025"} - {endDate || "Present"}
-//                   </p>
-
-//                   <p className="mt-3 text-gray-700 leading-7">
-//                     {experience || "Experience details will appear here..."}
-//                   </p>
-
-//                 </div>
-
-//               </div>
-
-//               {/* EDUCATION */}
-//               <div className="mt-8">
-
-//                 <h2 className="text-xl font-bold border-b pb-2">
-//                   Education
-//                 </h2>
-
-//                 <p className="mt-4 text-gray-700 leading-7">
-//                   {education || "Education details will appear here..."}
-//                 </p>
-
-//               </div>
-
-//               {/* PROJECTS */}
-//               <div className="mt-8">
-
-//                 <h2 className="text-xl font-bold border-b pb-2">
-//                   Projects
-//                 </h2>
-
-//                 <div className="mt-4">
-
-//                   <h3 className="text-lg font-semibold">
-//                     {projects || "AI Career Agent"}
-//                   </h3>
-
-//                   <p className="mt-3 text-gray-700 leading-7">
-//                     {projectExperience || "Project details will appear here..."}
-//                   </p>
-
-//                 </div>
-
-//               </div>
-
-//               {/* ACHIEVEMENTS */}
-//               <div className="mt-8">
-
-//                 <h2 className="text-xl font-bold border-b pb-2">
-//                   Achievements
-//                 </h2>
-
-//                 <p className="mt-4 text-gray-700 leading-7 whitespace-pre-line">
-//                   {achievements || "Achievements will appear here..."}
-//                 </p>
-
-//               </div>
-
-//             </div>
-
-//           </div>
-
-//         </div>
-
-//       )}
-
-//     </>
-//   );
-// };
-
-// export default ResumeBuilder;
-
-
-
-
-
-
-import React, { useState } from "react";
-import Navbar from "../components/common/Navbar";
-import { IoSaveSharp } from "react-icons/io5";
-import { FaFileDownload } from "react-icons/fa";
-
-const ResumeBuilder = () => {
-  // =========================
-  // PERSONAL INFO
-  // =========================
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [github, setGithub] = useState("");
-
-  // =========================
-  // SUMMARY
-  // =========================
-  const [professionalSummary, setProfessionalSummary] = useState("");
-
-  // =========================
-  // SKILLS
-  // =========================
-  const [skills, setSkills] = useState("");
-
-  // =========================
-  // EXPERIENCE
-  // =========================
-  const [company, setCompany] = useState("");
-  const [position, setPosition] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [experience, setExperience] = useState("");
-
-  // =========================
-  // EDUCATION
-  // =========================
-  const [college, setCollege] = useState("");
-  const [eduStartDate, setEduStartDate] = useState("");
-  const [eduEndDate, setEduEndDate] = useState("");
-  const [education, setEducation] = useState("");
-
-  // =========================
-  // PROJECTS
-  // =========================
-  const [projects, setProjects] = useState("");
-  const [projectExperience, setProjectExperience] = useState("");
-
-  // =========================
-  // ACHIEVEMENTS
-  // =========================
-  const [achievements, setAchievements] = useState("");
-
-  // =========================
-  // TOGGLE STATES
-  // =========================
-  const [formOpen, setFormOpen] = useState(true);
-  const [previewOpen, setPreviewOpen] = useState(true);
-
+  // MAIN RESUME BUILDER             
   return (
-    <>
+
+    <div className="min-h-screen bg-[#F7F9FC]">
+
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-indigo-900 text-white px-4 sm:px-6 py-24">
-        
-        {/* ================= HEADER ================= */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-8">
-          
-          <div>
-            <h1 className="text-4xl font-bold">
-              Resume{" "}
-              <span className="text-indigo-300">
-                Builder
-              </span>
-            </h1>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-20 pb-28">
 
-            <p className="text-gray-400 mt-2 text-sm">
-              Build ATS friendly resumes with AI assistance
-            </p>
-          </div>
-
-          {/* BUTTONS */}
-          <div className="flex flex-wrap items-center gap-3">
-            
-            {/* TOGGLE BUTTONS */}
-            <div className="bg-white/10 border border-white/10 rounded-xl p-1 flex">
-              
-              <button
-                onClick={() => {
-                  setFormOpen(true);
-                  setPreviewOpen(false);
-                }}
-                className={`px-4 py-2 rounded-lg transition ${
-                  formOpen
-                    ? "bg-indigo-500"
-                    : "hover:bg-white/10"
-                }`}
-              >
-                Form
-              </button>
-
-              <button
-                onClick={() => {
-                  setPreviewOpen(true);
-                  setFormOpen(false);
-                }}
-                className={`px-4 py-2 rounded-lg transition ${
-                  previewOpen
-                    ? "bg-indigo-500"
-                    : "hover:bg-white/10"
-                }`}
-              >
-                Preview
-              </button>
-            </div>
-
-            {/* SAVE BUTTON */}
-            <button
-              className="flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-white/10 border border-white/10 hover:bg-white/20 transition"
-            >
-              <IoSaveSharp />
-              Save
-            </button>
-
-            {/* DOWNLOAD BUTTON */}
-            <button
-              className="flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-indigo-500 hover:bg-indigo-600 transition"
-            >
-              <FaFileDownload />
-              Download PDF
-            </button>
-          </div>
+        {/* HEADER */}
+        <div className="text-center mb-10">
+          <h1 className="text-3xl mt-5 font-bold text-gray-900">
+            Build Your Resume
+          </h1>
+          <p className="text-gray-500 mt-2">
+            Fill sections below. AI will optimize for ATS.
+          </p>
         </div>
 
-        {/* ================= MAIN GRID ================= */}
-        <div
-          className={`grid gap-6 ${
-            formOpen && previewOpen
-              ? "lg:grid-cols-2"
-              : "grid-cols-1"
-          }`}
-        >
+        {/* ACCORDION SECTIONS */}
+        <div className="space-y-1">
+
+          {sections.map((section, index) => (
+
+            <div
+              key={index}
+              className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
+            >
+
+              {/* SECTION HEADER */}
+              <button
+                onClick={() => toggleSection(index)}
+                className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="w-9 h-9 rounded-lg bg-[#0A66C2]/10 text-[#0A66C2] flex items-center justify-center">
+                    {section.icon}
+                  </span>
+
+                  <h3 className="font-semibold text-gray-900">
+                    {section.title}
+                  </h3>
+                </div>
+
+                {openSections.includes(index) ? (
+                  <ChevronUp className="text-gray-400" />
+                ) : (
+                  <ChevronDown className="text-gray-400" />
+                )}
+              </button>
+
+              {/* SECTION CONTENT */}
+              {openSections.includes(index) && (
+                <div className="px-5 pb-6 pt-1 border-t border-gray-100">
+
+               
+                  {index === 0 && (
+                    <div className="grid md:grid-cols-2 gap-4 mt-4">
+
+                      <Input
+                        label="Resume Title"
+                        value={data.resumeTitle}
+                        onChange={(e) => updateData("resumeTitle", e.target.value)}
+                      />
+
+                      <Input
+                        label="Job Role"
+                        value={data.jobRole}
+                        onChange={(e) => updateData("jobRole", e.target.value)}
+                      />
+
+                         {/* PERSONAL INFORMATION */}
  
-          {/* ===================================================== */}
-          {/* ====================== FORM ========================= */}
-          {/* ===================================================== */}
+                      <Input
+                        label="Full Name"
+                        value={data.fullName}
+                        onChange={(e) => updateData("fullName", e.target.value)}
+                      />
 
-          {formOpen && (
-            <div className="space-y-6">
+                      <Input
+                        label="Email"
+                        type="email"
+                        value={data.email}
+                        onChange={(e) => updateData("email", e.target.value)}
+                      />
 
-              {/* PERSONAL INFO */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-                
-                <h2 className="text-xl font-semibold mb-5">
-                  Personal Information
-                </h2>
+                      <Input
+                        label="Location"
+                        value={data.location}
+                        onChange={(e) => updateData("location", e.target.value)}
+                      />
 
-                <div className="space-y-4">
+                      <Input
+                        label="LinkedIn"
+                        value={data.linkedinUrl}
+                        onChange={(e) => updateData("linkedinUrl", e.target.value)}
+                      />
 
-                  <div>
-                    <label className="text-sm text-gray-300">
-                      Full Name
-                    </label>
+                      <Input
+                        label="GitHub/X Profile"
+                        value={data.github}
+                        onChange={(e) => updateData("github", e.target.value)}
+                      />
 
-                    <input
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Adarsh Patidar"
-                      className="w-full mt-2 px-4 py-3 rounded-xl
-                      bg-white/5 border border-white/10 outline-none
-                      focus:border-indigo-400"
-                    />
-                  </div>
+                      <Input
+                        label="Mobile No"
+                        value={data.phone}
+                        onChange={(e) => updateData("phone", e.target.value)}
+                      />
+                    </div>
+                  )}
 
-                  <div>
-                    <label className="text-sm text-gray-300">
-                      Email
-                    </label>
+                  {/* PROFESSIONAL SUMMARY */}
+                  {index === 1 && (
+                    <div className="mt-4">
+                      <TextArea
+                        label="Summary"
+                        rows={5}
+                        value={data.professionalSummary}
+                        onChange={(e) => updateData("professionalSummary", e.target.value)}
+                      />
 
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="my@gmail.com"
-                      className="w-full mt-2 px-4 py-3 rounded-xl
-                      bg-white/5 border border-white/10 outline-none
-                      focus:border-indigo-400"
-                    />
-                  </div>
+                      <button
+                        onClick={() => toast.info("AI optimization coming soon")}
+                        className="mt-3 flex items-center gap-2 px-3 py-2 bg-blue-50 text-[#0A66C2] rounded-lg text-sm font-medium hover:bg-blue-100 transition"
+                      >
+                        <Wand2 size={16} />
+                        Improve with AI
+                      </button>
+                    </div>
+                  )}
 
-                  <div>
-                    <label className="text-sm text-gray-300">
-                      LinkedIn URL
-                    </label>
+                  {/* WORK EXPERIENCE */}
+                  {index === 2 && (
+                    <div className="space-y-6 mt-4">
 
-                    <input
-                      type="url"
-                      value={linkedinUrl}
-                      onChange={(e) => setLinkedinUrl(e.target.value)}
-                      placeholder="linkedin.com/in/adarsh"
-                      className="w-full mt-2 px-4 py-3 rounded-xl
-                      bg-white/5 border border-white/10 outline-none
-                      focus:border-indigo-400"
-                    />
-                  </div>
+                      {data.experiences.map((experience, experienceIndex) => (
+                        <div
+                          key={experienceIndex}
+                          className="border border-gray-200 rounded-xl p-4 bg-[#FAFBFD]"
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="font-semibold text-gray-800">
+                              Experience {experienceIndex + 1}
+                            </h4>
 
-                  <div>
-                    <label className="text-sm text-gray-300">
-                      GitHub URL
-                    </label>
+                            {data.experiences.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => removeExperience(experienceIndex)}
+                                className="text-red-500 hover:text-red-700 transition"
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                            )}
+                          </div>
 
-                    <input
-                      type="url"
-                      value={github}
-                      onChange={(e) => setGithub(e.target.value)}
-                      placeholder="github.com/adarsh"
-                      className="w-full mt-2 px-4 py-3 rounded-xl
-                      bg-white/5 border border-white/10 outline-none
-                      focus:border-indigo-400"
-                    />
-                  </div>
+                          <div className="grid md:grid-cols-2 gap-4">
+                            <Input
+                              label="Position"
+                              value={experience.position}
+                              onChange={(e) => updateExperience(experienceIndex, "position", e.target.value)}
+                            />
 
-                </div>
-              </div>
+                            <Input
+                              label="Company"
+                              value={experience.company}
+                              onChange={(e) => updateExperience(experienceIndex, "company", e.target.value)}
+                            />
 
-              {/* SUMMARY */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-                
-                <h2 className="text-xl font-semibold mb-5">
-                  Professional Summary
-                </h2>
+                            <Input
+                              label="Start"
+                              type="date"
+                              value={experience.startDate}
+                              onChange={(e) => updateExperience(experienceIndex, "startDate", e.target.value)}
+                            />
 
-                <textarea
-                  rows={5}
-                  value={professionalSummary}
-                  onChange={(e) =>
-                    setProfessionalSummary(e.target.value)
-                  }
-                  placeholder="Write your professional summary..."
-                  className="w-full px-4 py-3 rounded-xl
-                  bg-white/5 border border-white/10 outline-none
-                  focus:border-indigo-400 resize-none"
-                />
+                            <Input
+                              label="End"
+                              type="date"
+                              value={experience.endDate}
+                              onChange={(e) => updateExperience(experienceIndex, "endDate", e.target.value)}
+                            />
+                          </div>
 
-                <button
-                  className="mt-4 px-4 py-2 rounded-lg
-                  bg-indigo-500 hover:bg-indigo-600 transition text-sm"
-                >
-                  Improve with AI
-                </button>
-              </div>
+                          <div className="mt-4">
+                            <TextArea
+                              label="Description"
+                              rows={4}
+                              value={experience.desc}
+                              onChange={(e) => updateExperience(experienceIndex, "desc", e.target.value)}
+                            />
+                          </div>
 
-              {/* SKILLS */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-                
-                <h2 className="text-xl font-semibold mb-5">
-                  Skills
-                </h2>
+                          <button
+                            onClick={() => toast.info("AI optimization coming soon")}
+                            className="mt-3 flex items-center gap-2 px-3 py-2 bg-blue-50 text-[#0A66C2] rounded-lg text-sm font-medium hover:bg-blue-100 transition"
+                          >                                     
+                            <Wand2 size={16} />                  
+                            Improve with AI
+                          </button>
+                        </div>
+                      ))}
 
-                <textarea
-                  rows={3}
-                  value={skills}
-                  onChange={(e) => setSkills(e.target.value)}
-                  placeholder="React, Node.js, MongoDB, AWS..."
-                  className="w-full px-4 py-3 rounded-xl
-                  bg-white/5 border border-white/10 outline-none
-                  focus:border-indigo-400 resize-none"
-                />
-              </div>
+                      <button
+                        type="button"
+                        onClick={addExperience}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-[#0A66C2] rounded-lg text-sm font-medium hover:bg-blue-100 transition"
+                      >
+                        <Plus size={16} />
+                        Add Experience
+                      </button>
+                    </div>
+                  )}
 
-              {/* EXPERIENCE */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-                
-                <h2 className="text-xl font-semibold mb-5">
-                  Work Experience
-                </h2>
+                  {/* EDUCATION */}
+                  {index === 3 && (
+                    <div className="space-y-6 mt-4">
 
-                <div className="space-y-4">
+                      {data.education.map((education, educationIndex) => (
+                        <div
+                          key={educationIndex}
+                          className="border border-gray-200 rounded-xl p-4 bg-[#FAFBFD]"
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="font-semibold text-gray-800">
+                              Education {educationIndex + 1}
+                            </h4>
 
-                  <input
-                    type="text"
-                    placeholder="Position / Title"
-                    value={position}
-                    onChange={(e) => setPosition(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl
-                    bg-white/5 border border-white/10 outline-none
-                    focus:border-indigo-400"
-                  />
+                            {data.education.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => removeEducation(educationIndex)}
+                                className="text-red-500 hover:text-red-700 transition"
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                            )}
+                          </div>
 
-                  <input
-                    type="text"
-                    placeholder="Company / Organization"
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl
-                    bg-white/5 border border-white/10 outline-none
-                    focus:border-indigo-400"
-                  />
+                          <div className="space-y-4">
+                            <Input
+                              label="College"
+                              value={education.college}
+                              onChange={(e) => updateEducation(educationIndex, "college", e.target.value)}
+                            />
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <Input
+                              label="Degree"
+                              value={education.degree}
+                              onChange={(e) => updateEducation(educationIndex, "degree", e.target.value)}
+                            />
 
-                    <input
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="px-4 py-3 rounded-xl
-                      bg-white/5 border border-white/10 outline-none
-                      focus:border-indigo-400"
-                    />
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <Input
+                                label="Start"
+                                type="date"
+                                value={education.startDate}
+                                onChange={(e) => updateEducation(educationIndex, "startDate", e.target.value)}
+                              />
 
-                    <input
-                      type="date"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="px-4 py-3 rounded-xl
-                      bg-white/5 border border-white/10 outline-none
-                      focus:border-indigo-400"
-                    />
-                  </div>
+                              <Input
+                                label="End"
+                                type="date"
+                                value={education.endDate}
+                                onChange={(e) => updateEducation(educationIndex, "endDate", e.target.value)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
 
-                  <textarea
-                    rows={4}
-                    value={experience}
-                    onChange={(e) => setExperience(e.target.value)}
-                    placeholder="Describe your professional experience..."
-                    className="w-full px-4 py-3 rounded-xl
-                    bg-white/5 border border-white/10 outline-none
-                    focus:border-indigo-400 resize-none"
-                  />
+                      <button
+                        type="button"
+                        onClick={addEducation}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-[#0A66C2] rounded-lg text-sm font-medium hover:bg-blue-100 transition"
+                      >
+                        <Plus size={16} />
+                        Add Education
+                      </button>
+                    </div>
+                  )}
 
-                </div>
-              </div>
+                  {/* SKILLS */}
+                  {/* {index === 4 && (
+                    <div className="mt-4">
+                      <TextArea
+                        label="Skills"
+                        rows={3}
+                        placeholder="React, Node.js, MongoDB, AWS"
+                        value={data.skills}
+                        onChange={(e) => updateData("skills", e.target.value)}
+                      />
 
-              {/* EDUCATION */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-                
-                <h2 className="text-xl font-semibold mb-5">
-                  Education
-                </h2>
+                      <button
+                        onClick={() => toast.info("AI optimization coming soon")}
+                        className="mt-3 flex items-center gap-2 px-3 py-2 bg-blue-50 text-[#0A66C2] rounded-lg text-sm font-medium hover:bg-blue-100 transition"
+                      >
+                        <Wand2 size={16} />
+                        Improve with AI
+                      </button>
+                    </div>
+                  )} */}
 
-                <div className="space-y-4">
+                 
+                  {index === 4 && (
+  <div className="space-y-6 mt-4">
 
-                  <input
-                    type="text"
-                    placeholder="College / University"
-                    value={college}
-                    onChange={(e) => setCollege(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl
-                    bg-white/5 border border-white/10 outline-none
-                    focus:border-indigo-400"
-                  />
+    {data.skills.map((skill, skillIndex) => (
+      <div
+        key={skillIndex}
+        className="border border-gray-200 rounded-xl p-4 bg-[#FAFBFD]"
+      >
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* HEADER */}
+        <div className="flex items-center justify-between mb-4">
 
-                    <input
-                      type="date"
-                      value={eduStartDate}
-                      onChange={(e) =>
-                        setEduStartDate(e.target.value)
-                      }
-                      className="px-4 py-3 rounded-xl
-                      bg-white/5 border border-white/10 outline-none
-                      focus:border-indigo-400"
-                    />
+          <h4 className="font-semibold text-gray-800">
+            Skill Category {skillIndex + 1}
+          </h4>
 
-                    <input
-                      type="date"
-                      value={eduEndDate}
-                      onChange={(e) =>
-                        setEduEndDate(e.target.value)
-                      }
-                      className="px-4 py-3 rounded-xl
-                      bg-white/5 border border-white/10 outline-none
-                      focus:border-indigo-400"
-                    />
-                  </div>
-
-                  <textarea
-                    rows={4}
-                    value={education}
-                    onChange={(e) => setEducation(e.target.value)}
-                    placeholder="Describe your education..."
-                    className="w-full px-4 py-3 rounded-xl
-                    bg-white/5 border border-white/10 outline-none
-                    focus:border-indigo-400 resize-none"
-                  />
-                </div>
-              </div>
-
-              {/* PROJECTS */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-                
-                <h2 className="text-xl font-semibold mb-5">
-                  Projects
-                </h2>
-
-                <div className="space-y-4">
-
-                  <input
-                    type="text"
-                    placeholder="Project Name"
-                    value={projects}
-                    onChange={(e) => setProjects(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl
-                    bg-white/5 border border-white/10 outline-none
-                    focus:border-indigo-400"
-                  />
-
-                  <textarea
-                    rows={4}
-                    value={projectExperience}
-                    onChange={(e) =>
-                      setProjectExperience(e.target.value)
-                    }
-                    placeholder="Describe your project..."
-                    className="w-full px-4 py-3 rounded-xl
-                    bg-white/5 border border-white/10 outline-none
-                    focus:border-indigo-400 resize-none"
-                  />
-                </div>
-              </div>
-
-              {/* ACHIEVEMENTS */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
-                
-                <h2 className="text-xl font-semibold mb-5">
-                  Achievements
-                </h2>
-
-                <textarea
-                  rows={5}
-                  value={achievements}
-                  onChange={(e) => setAchievements(e.target.value)}
-                  placeholder="Achievements..."
-                  className="w-full px-4 py-3 rounded-xl
-                  bg-white/5 border border-white/10 outline-none
-                  focus:border-indigo-400 resize-none"
-                />
-              </div>
-            </div>
+          {data.skills.length > 1 && (
+            <button
+              type="button"
+              onClick={() => removeSkill(skillIndex)}
+              className="text-red-500 hover:text-red-700 transition"
+            >
+              <Trash2 size={18} />
+            </button>
           )}
 
-          {/* ===================================================== */}
-          {/* ===================== PREVIEW ======================= */}
-          {/* ===================================================== */}
-
-          {previewOpen && (
-            <div className="sticky top-24 h-fit">
-              
-              <div className="bg-white text-black rounded-2xl p-8 shadow-2xl">
-
-                {/* NAME */}
-                <h1 className="text-3xl font-bold">
-                  {fullName || "Your Name"}
-                </h1>
-
-                {/* CONTACT */}
-                <div className="mt-2 text-sm text-gray-600 space-y-1">
-                  
-                  <p>
-                    {email || "your@email.com"}
-                  </p>
-
-                  <p>
-                    {linkedinUrl || "linkedin.com/in/username"}
-                  </p>
-
-                  <p>
-                    {github || "github.com/username"}
-                  </p>
-                </div>
-
-                {/* SUMMARY */}
-                <div className="mt-6">
-                  
-                  <h2 className="text-lg font-semibold border-b pb-2">
-                    Professional Summary
-                  </h2>
-
-                  <p className="text-sm mt-3 text-gray-700">
-                    {professionalSummary ||
-                      "Your professional summary will appear here..."}
-                  </p>
-                </div>
-
-                {/* SKILLS */}
-                <div className="mt-6">
-                  
-                  <h2 className="text-lg font-semibold border-b pb-2">
-                    Skills
-                  </h2>
-
-                  <p className="text-sm mt-3 text-gray-700">
-                    {skills || "Your skills will appear here..."}
-                  </p>
-                </div>
-
-                {/* EXPERIENCE */}
-                <div className="mt-6">
-                  
-                  <h2 className="text-lg font-semibold border-b pb-2">
-                    Experience
-                  </h2>
-
-                  <div className="mt-3">
-
-                    <h3 className="font-semibold">
-                      {position || "Position"}
-                    </h3>
-
-                    <p className="text-sm text-gray-600">
-                      {company || "Company"}
-                    </p>
-
-                    <p className="text-sm text-gray-500">
-                      {startDate || "Start"} -{" "}
-                      {endDate || "End"}
-                    </p>
-
-                    <p className="text-sm mt-2 text-gray-700">
-                      {experience ||
-                        "Your experience details will appear here..."}
-                    </p>
-                  </div>
-                </div>
-
-                {/* EDUCATION */}
-                <div className="mt-6">
-                  
-                  <h2 className="text-lg font-semibold border-b pb-2">
-                    Education
-                  </h2>
-
-                  <div className="mt-3">
-
-                    <h3 className="font-semibold">
-                      {college || "College Name"}
-                    </h3>
-
-                    <p className="text-sm text-gray-500">
-                      {eduStartDate || "Start"} -{" "}
-                      {eduEndDate || "End"}
-                    </p>
-
-                    <p className="text-sm mt-2 text-gray-700">
-                      {education ||
-                        "Your education details will appear here..."}
-                    </p>
-                  </div>
-                </div>
-
-                {/* PROJECTS */}
-                <div className="mt-6">
-                  
-                  <h2 className="text-lg font-semibold border-b pb-2">
-                    Projects
-                  </h2>
-
-                  <div className="mt-3">
-
-                    <h3 className="font-semibold">
-                      {projects || "Project Name"}
-                    </h3>
-
-                    <p className="text-sm mt-2 text-gray-700">
-                      {projectExperience ||
-                        "Project details will appear here..."}
-                    </p>
-                  </div>
-                </div>
-
-                {/* ACHIEVEMENTS */}
-                <div className="mt-6">
-                  
-                  <h2 className="text-lg font-semibold border-b pb-2">
-                    Achievements
-                  </h2>
-
-                  <p className="text-sm mt-3 text-gray-700 whitespace-pre-line">
-                    {achievements ||
-                      "Your achievements will appear here..."}
-                  </p>
-                </div>
-
-              </div>
-            </div>
-          )}
         </div>
+
+        {/* CATEGORY NAME */}
+        <Input
+          label="Category"
+          placeholder="Programming"
+          value={skill.category}
+          onChange={(e) =>
+            updateSkill(
+              skillIndex,
+              "category",
+              e.target.value
+            )
+          }
+        />
+
+        {/* SKILLS */}
+        <div className="mt-4">
+          <TextArea
+            label="Skills"
+            rows={3}
+            placeholder="C++, JavaScript, TypeScript, SQL"
+            value={skill.items}
+            onChange={(e) =>
+              updateSkill(
+                skillIndex,
+                "items",
+                e.target.value
+              )
+            }
+          />
+        </div>
+
       </div>
-    </>
+    ))}
+
+    {/* ADD CATEGORY */}
+    <button
+      type="button"
+      onClick={addSkills}
+      className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-[#0A66C2] rounded-lg text-sm font-medium hover:bg-blue-100 transition"
+    >
+      <Plus size={16} />
+      Add Skill Category
+    </button>
+
+  </div>
+)}
+
+                  {/* PROJECTS */}
+                  {index === 5 && (
+                    <div className="space-y-6 mt-4">
+
+                      {data.projects.map((project, projectIndex) => (
+                        <div
+                          key={projectIndex}
+                          className="border border-gray-200 rounded-xl p-4 bg-[#FAFBFD]"
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="font-semibold text-gray-800">
+                              Project {projectIndex + 1}
+                            </h4>
+
+                            {data.projects.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => removeProject(projectIndex)}
+                                className="text-red-500 hover:text-red-700 transition"
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                            )}
+                          </div>
+
+                          <div className="space-y-4">
+                            <Input
+                              label="Title"
+                              value={project.title}
+                              onChange={(e) => updateProject(projectIndex, "title", e.target.value)}
+                            />
+
+                             <Input
+                              label="Tech Stack"
+                              placeholder="React, Springboot, Angular"
+                              value={project.techStack}
+                              onChange={(e) => updateProject(projectIndex, "techStack", e.target.value)}
+                            />
+
+                            <TextArea
+                              label="Description"
+                              rows={3}
+                              value={project.description}
+                              onChange={(e) => updateProject(projectIndex, "description", e.target.value)}
+                            />
+
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <Input
+                                label="Start"
+                                type="date"
+                                value={project.startDate}
+                                onChange={(e) => updateProject(projectIndex, "startDate", e.target.value)}
+                              />
+
+                              <Input
+                                label="End"
+                                type="date"
+                                value={project.endDate}
+                                onChange={(e) => updateProject(projectIndex, "endDate", e.target.value)}
+                              />
+
+                              <Input
+                                 label="Link"
+                                 value={project.link}
+                                 onChange={(e) => updateProject(projectIndex, "link", e.target.value)}
+                              />
+
+                            </div>
+
+                            <button
+                              onClick={() => toast.info("AI optimization coming soon")}
+                              className="mt-3 flex items-center gap-2 px-3 py-2 bg-blue-50 text-[#0A66C2] rounded-lg text-sm font-medium hover:bg-blue-100 transition"
+                            >
+                              <Wand2 size={16} />
+                              Improve with AI
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+
+                      <button
+                        type="button"
+                        onClick={addProject}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-[#0A66C2] rounded-lg text-sm font-medium hover:bg-blue-100 transition"
+                      >
+                        <Plus size={16} />
+                        Add Project
+                      </button>
+                    </div>
+                  )}
+
+                  {/* ACHIEVEMENTS */}
+                  {index === 6 && (
+                    <div className="mt-4">
+                      <TextArea
+                        label="Achievements"
+                        rows={4}
+                        placeholder="Enter each achievement on a new line"
+                        value={data.achievements}
+                        onChange={(e) => updateData("achievements", e.target.value)}
+                      />
+
+                      <button
+                        onClick={() => toast.info("AI optimization coming soon")}
+                        className="mt-3 flex items-center gap-2 px-3 py-2 bg-blue-50 text-[#0A66C2] rounded-lg text-sm font-medium hover:bg-blue-100 transition"
+                      >                                     
+                        <Wand2 size={16} />
+                        Improve with AI
+                      </button>
+                    </div>
+                  )}
+
+                </div>
+              )}
+
+            </div>
+          ))}
+
+        </div>
+
+        {/* FLOATING ACTION BAR */}
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white border border-gray-200 rounded-full shadow-lg px-2 py-2 flex gap-2 z-50">
+
+          {/* <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition disabled:opacity-60"
+          >
+            <Save size={16} />
+            {isSaving ? "Saving..." : "Save"}
+          </button> */}
+
+          
+          <button
+  onClick={resumeId ? handleUpdate : handleSave}
+  disabled={isSaving}
+  className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition disabled:opacity-60"
+>
+  <Save size={16} />
+
+  {isSaving
+    ? resumeId
+      ? "Updating..."
+      : "Saving..."
+    : resumeId
+    ? "Update"
+    : "Save"}
+</button>
+
+          <button
+  onClick={() => navigate(`/resume-preview/${resumeId}`)}
+  className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0A66C2] text-white text-sm font-semibold hover:bg-[#004182] transition"
+>
+  <Eye size={16} />
+  Preview
+</button>
+
+        </div>
+
+      </div>
+
+    </div>
+
   );
+
 };
 
 export default ResumeBuilder;

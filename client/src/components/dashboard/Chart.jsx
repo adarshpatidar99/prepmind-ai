@@ -744,6 +744,113 @@
 
 
 
+// import React from "react";
+// import {
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   ResponsiveContainer,
+//   CartesianGrid,
+// } from "recharts";
+
+// const Chart = () => {
+//   const data = [
+//     { role: "Frontend", min: 5, avg: 10, max: 18, demand: 70 },
+//     { role: "Backend", min: 6, avg: 14, max: 25, demand: 80 },
+//     { role: "Full Stack", min: 7, avg: 18, max: 28, demand: 85 },
+//     { role: "DevOps", min: 8, avg: 20, max: 30, demand: 75 },
+//     { role: "AI/ML", min: 10, avg: 25, max: 40, demand: 95 },
+//     { role: "Data Science", min: 12, avg: 25, max: 40, demand: 92 },
+//   ];
+
+//   const CustomTooltip = ({ active, payload, label }) => {
+//     if (active && payload && payload.length) {
+//       return (
+//         <div className="bg-[#0b1020]/95 backdrop-blur-md px-4 py-3 rounded-xl border border-indigo-400/20 shadow-lg">
+//           <p className="text-xs text-indigo-300 mb-2 font-semibold">{label}</p>
+
+//           {payload.map((item, i) => (
+//             <p key={i} className="text-xs text-gray-300">
+//               {item.name}:{" "}
+//               <span className="text-white font-semibold">
+//                 {item.value} LPA
+//               </span>
+//             </p>
+//           ))}
+
+//           {/* extra insight */}
+//           {payload[0]?.payload?.demand && (
+//             <p className="text-xs text-emerald-300 mt-2">
+//               Demand: {payload[0].payload.demand}%
+//             </p>
+//           )}
+//         </div>
+//       );
+//     }
+//     return null;
+//   };
+
+//   return (
+//     <div className="w-full h-[360px] mt-8 bg-white/5 backdrop-blur-xl border border-indigo-500/20 rounded-2xl p-4 shadow-lg hover:shadow-indigo-500/30 transition-all duration-300">
+
+//       {/* HEADER */}
+//       <div className="flex items-center justify-between mb-3">
+//         <h2 className="text-lg font-semibold text-indigo-200">
+//            Salary & Demand Insights (LPA)
+//         </h2>
+
+//         <div className="flex gap-3 text-[10px]">
+//           <span className="text-red-300">Min</span>
+//           <span className="text-indigo-300">Avg</span>
+//           <span className="text-emerald-300">Max</span>
+//         </div>
+//       </div>
+
+//       {/* CHART */}
+//       <ResponsiveContainer width="100%" height="90%">
+//         <BarChart data={data} barGap={6}>
+
+//           <CartesianGrid
+//             strokeDasharray="3 3"
+//             stroke="#1f2937"
+//             opacity={0.4}
+//           />
+
+//           <XAxis
+//             dataKey="role"
+//             stroke="#9ca3af"
+//             fontSize={10}
+//             tickLine={false}
+//           />
+
+//           <YAxis
+//             stroke="#9ca3af"
+//             fontSize={10}
+//             tickLine={false}
+//           />
+
+//           <Tooltip content={<CustomTooltip />} />
+
+//           {/* MODERN NEON COLORS */}
+//           <Bar dataKey="min" fill="#f43f5e" radius={[6, 6, 0, 0]} />
+//           <Bar dataKey="avg" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
+//           <Bar dataKey="max" fill="#22c55e" radius={[6, 6, 0, 0]} />
+
+//         </BarChart>
+//       </ResponsiveContainer>
+
+//     </div>
+//   );
+// };
+
+// export default Chart;
+
+
+
+
+
 import React from "react";
 import {
   BarChart,
@@ -768,11 +875,11 @@ const Chart = () => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-[#0b1020]/95 backdrop-blur-md px-4 py-3 rounded-xl border border-indigo-400/20 shadow-lg">
-          <p className="text-xs text-indigo-300 mb-2 font-semibold">{label}</p>
+        <div className="bg-[#0b1020]/95 backdrop-blur-md px-3 sm:px-4 py-2 sm:py-3 rounded-xl border border-indigo-400/20 shadow-lg">
+          <p className="text-[10px] sm:text-xs text-indigo-300 mb-2 font-semibold">{label}</p>
 
           {payload.map((item, i) => (
-            <p key={i} className="text-xs text-gray-300">
+            <p key={i} className="text-[10px] sm:text-xs text-gray-300">
               {item.name}:{" "}
               <span className="text-white font-semibold">
                 {item.value} LPA
@@ -780,9 +887,8 @@ const Chart = () => {
             </p>
           ))}
 
-          {/* extra insight */}
           {payload[0]?.payload?.demand && (
-            <p className="text-xs text-emerald-300 mt-2">
+            <p className="text-[10px] sm:text-xs text-emerald-300 mt-2">
               Demand: {payload[0].payload.demand}%
             </p>
           )}
@@ -793,15 +899,15 @@ const Chart = () => {
   };
 
   return (
-    <div className="w-full h-[360px] mt-8 bg-white/5 backdrop-blur-xl border border-indigo-500/20 rounded-2xl p-4 shadow-lg hover:shadow-indigo-500/30 transition-all duration-300">
+    <div className="w-full h-[260px] sm:h-[360px] mt-6 sm:mt-8 bg-white/5 backdrop-blur-xl border-indigo-500/20 rounded-2xl p-3 sm:p-4 shadow-lg hover:shadow-indigo-500/30 transition-all duration-300">
 
       {/* HEADER */}
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-semibold text-indigo-200">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 sm:mb-3 gap-2">
+        <h2 className="text-sm sm:text-lg font-semibold text-indigo-200">
            Salary & Demand Insights (LPA)
         </h2>
 
-        <div className="flex gap-3 text-[10px]">
+        <div className="flex gap-2 sm:gap-3 text-[9px] sm:text-[10px]">
           <span className="text-red-300">Min</span>
           <span className="text-indigo-300">Avg</span>
           <span className="text-emerald-300">Max</span>
@@ -809,8 +915,8 @@ const Chart = () => {
       </div>
 
       {/* CHART */}
-      <ResponsiveContainer width="100%" height="90%">
-        <BarChart data={data} barGap={6}>
+      <ResponsiveContainer width="100%" height="85%">
+        <BarChart data={data} barGap={4} margin={{ left: -10, right: 0, top: 5, bottom: 0 }}>
 
           <CartesianGrid
             strokeDasharray="3 3"
@@ -821,22 +927,26 @@ const Chart = () => {
           <XAxis
             dataKey="role"
             stroke="#9ca3af"
-            fontSize={10}
+            fontSize={9}
             tickLine={false}
+            angle={-25} /* rotate on mobile */
+            textAnchor="end"
+            height={50} /* give space for rotated text */
+            interval={0}
           />
 
           <YAxis
             stroke="#9ca3af"
-            fontSize={10}
+            fontSize={9}
             tickLine={false}
+            width={35} /* less width on mobile */
           />
 
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(139, 92, 246, 0.1)' }} />
 
-          {/* MODERN NEON COLORS */}
-          <Bar dataKey="min" fill="#f43f5e" radius={[6, 6, 0, 0]} />
-          <Bar dataKey="avg" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
-          <Bar dataKey="max" fill="#22c55e" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="min" fill="#f43f5e" radius={[4, 4, 0, 0]} barSize={8} />
+          <Bar dataKey="avg" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={8} />
+          <Bar dataKey="max" fill="#22c55e" radius={[4, 4, 0, 0]} barSize={8} />
 
         </BarChart>
       </ResponsiveContainer>

@@ -119,135 +119,64 @@
 
 
 
-
-
-import React, { useState } from "react";
-import { FiChevronDown } from "react-icons/fi";
+import React, { useState } from 'react'
+import { FaPlus, FaMinus } from "react-icons/fa";
 
 const faqs = [
   {
-    question: "What is this platform about?",
-    answer:
-      "This platform helps you prepare for interviews and provides AI-powered career guidance based on your skills and goals.",
+    q: "Is PrepMind AI really free?",
+    a: "Yes. Our Free plan gives you access to core tools forever. No credit card required. You can upgrade to Pro anytime for advanced AI features."
   },
   {
-    question: "How does AI career guidance work?",
-    answer:
-      "Our AI analyzes your skills and goals to suggest personalized career paths and learning roadmaps.",
+    q: "Is this only for resume building?",
+    a: "No. PrepMind Ai is a complete job prep platform. You get resume builder, AI mock interviews, ATS checker, career roadmaps, and job application tracking."
   },
   {
-    question: "Are the interview questions real?",
-    answer:
-      "Yes, we provide curated questions based on real-world company patterns and industry trends.",
+    q: "Will this work for freshers with no experience?",
+    a: "Absolutely. We have templates, questions, and roadmaps specifically designed for students and freshers applying for their first job."
   },
-  
   {
-    question: "Does it cover DSA and system design?",
-    answer:
-      "Yes, we cover DSA, system design, and other important interview topics.",
+    q: "How accurate is the AI feedback?",
+    a: "Our AI is trained on 10,000+ real job descriptions and interview questions. It gives feedback based on what recruiters in India are actually looking for in 2026."
   },
-
-   {
-    question: "Can this platform help me get a job?",
-    answer:
-      "It improves your skills, confidence, and preparation, which increases your chances of getting hired.",
-  },
-
-   {
-    question: "How often is the content updated?",
-    answer:
-      "We regularly update questions and content based on latest industry trends.",
-  },
-
   {
-    question: "Can beginners use this platform?",
-    answer:
-      "Absolutely! The platform is designed for both beginners and experienced candidates.",
+    q: "Can I cancel my Pro subscription anytime?",
+    a: "Yes. You can upgrade, downgrade, or cancel anytime from your dashboard. No lock-in period."
   },
-
-
-
-];
-
+]
 
 const FAQ = () => {
-  const [activeIndex, setActiveIndex] = useState(null);
-
-  const toggle = (index) => {
-    setActiveIndex(activeIndex === index ? null : index);
-  };
+  const [openIndex, setOpenIndex] = useState(null)
 
   return (
-    <section className="py-12 px-4 bg-gradient-to-b from-black via-gray-900 to-black">
-
-      <div className="max-w-3xl mx-auto">
-
-        {/* Heading */}
-        {/* <h1 className="text-3xl md:text-4xl font-bold text-center mb-10 bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+    <section className="py-20 px-4 bg-gray-950">
+      <div className='max-w-3xl mx-auto'>
+        <h2 className="text-3xl md:text-4xl font-bold text-white text-center">
           Frequently Asked Questions
-        </h1> */}
-
-         <h1 className="text-3xl md:text-4xl font-bold text-center mb-4 bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent animate-pulse">
-          Frequently Asked Questions
-        </h1>
-
-        {/* FAQ List */}
-        <div className="space-y-2">
-
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className={`relative rounded-2xl border  border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 
-              ${
-                activeIndex === index
-                  ? " scale-[1.02] shadow-[0_0_25px_rgba(168,85,247,0.4)]"
-                  : "hover:scale-[1.01]"
-              }`}
-            >
-
-              {/* Glow Effect */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/10 to-indigo-500/10 opacity-0 hover:opacity-100 transition"></div>
-
-              {/* Question */}
-              <button
-                onClick={() => toggle(index)}
-                className="relative ml-2 z-8 w-full flex justify-between items-center p-3"
+        </h2>
+        
+        <div className='mt-12 space-y-4'>
+          {faqs.map((faq, i) => (
+            <div key={i} className='bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden'>
+              <button 
+                onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                className='w-full flex justify-between items-center p-5 text-left hover:bg-gray-900/70 transition-colors duration-200'
+                aria-expanded={openIndex === i}
               >
-                <span className="text-left text-white font-medium text-sm md:text-base">
-                  {faq.question}
-                </span>
-
-                <FiChevronDown
-                  className={`text-white text-xl mr-2 transition-transform duration-500 ${
-                    activeIndex === index ? "rotate-180 text-purple-400" : ""
-                  }`}
-                />
+                <span className='text-lg font-semibold text-white pr-4'>{faq.q}</span>
+                {openIndex === i ? <FaMinus className='text-[#0A66C2] flex-shrink-0'/> : <FaPlus className='text-[#0A66C2] flex-shrink-0'/>}
               </button>
-
-              {/* Answer */}
-              <div
-                className={`grid transition-all duration-500 ease-in-out ${
-                  activeIndex === index
-                    ? "grid-rows-[1fr] opacity-100"
-                    : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <p className="px-5 pb-2 text-gray-300 text-sm leading-relaxed">
-                    {faq.answer}
-                  </p>
-                </div>
+              <div className={`transition-all duration-300 ease-in-out ${openIndex === i ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                <p className='px-5 pb-5 text-gray-400 leading-relaxed'>
+                  {faq.a}
+                </p>
               </div>
-
             </div>
           ))}
-
         </div>
-
       </div>
-
     </section>
-  );
-};
+  )
+}
 
-export default FAQ;
+export default FAQ
